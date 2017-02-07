@@ -1,0 +1,10 @@
+
+public enum BattleState {
+	BATTLE_READY,
+	MOVE_SELECT,
+	IN_BATTLE,
+	IN_CUTSCENE,
+	BATTLE_OVER
+	
+
+}
