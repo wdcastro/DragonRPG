@@ -4,18 +4,18 @@ import javafx.scene.input.MouseEvent;
 
 public class GameThread extends Thread{
 	
-	final int MAX_FPS = 100;
+	/*final int MAX_FPS = 100;
 	final int MILLIS_BETWEEN_FRAMES = 1000/MAX_FPS;
 
 	final int MAX_DRAWS = 60;
 	final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
+	*/
 	
 	
 	
 	SystemState gameState;
 	SpellManager sm;
 	BattleManager bm;
-	TileManager tiles;
 
 	PlaylistManager pm = new PlaylistManager();
 	
@@ -24,19 +24,19 @@ public class GameThread extends Thread{
 	
 	public GameThread(GraphicsContext gc){
 		sm = new SpellManager();
-		bm = new BattleManager();		
-		tiles = new TileManager(gc);		
+		bm = new BattleManager();			
 	}
 	
 	public void run(){
 		gameState = SystemState.IN_BATTLE;
 		pm.start();
-		long lastUpdateTime = System.nanoTime();
+		/*long lastUpdateTime = System.nanoTime();
 		long timeSinceLastUpdate = 0; // Time Elapsed
 		long timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES;
 		long fpstimer = 0;
 		int fpscount = 0;
-		while(isRunning){
+		
+		//while(isRunning){
 			timeSinceLastUpdate = System.nanoTime() - lastUpdateTime; // now - last update's timestamp
 			timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES * Game.MILLIS_TO_NANOS - timeSinceLastUpdate;
 			if(timeUntilNextUpdate <= 0){
@@ -47,7 +47,7 @@ public class GameThread extends Thread{
 				fpstimer+=timeSinceLastUpdate;
 				if(fpstimer > 1000 * Game.MILLIS_TO_NANOS){
 					fpstimer = 0;
-					//System.out.println("FPS: "+ fpscount);
+					System.out.println("FPS: "+ fpscount);
 					fpscount = 0;
 				}
 			} else {
@@ -59,8 +59,8 @@ public class GameThread extends Thread{
 				}
 			}
 
-			
-		}
+			*/
+		//}
 	}
 	
 	public void update(){

@@ -1,22 +1,15 @@
-import java.awt.Graphics;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 
-public class TileManager extends JPanel{
+public class TileManager extends Thread{
 	
 	private final int TILE_WIDTH = 32;
 	private final int TILE_HEIGHT = 32;
@@ -29,6 +22,8 @@ public class TileManager extends JPanel{
 	int	amountRead;
 	int remainingFileSize;
 	int currentOffset = 0;
+	
+	boolean tilesReady = false;
 	
 	Image image;
 	Image tileToDraw;
@@ -47,9 +42,13 @@ public class TileManager extends JPanel{
 		for(int i = 80; i< 880; i++){
 			testarray[i]=2;
 		}
+		
+	}
+	
+	public void run(){
 		loadMapImage("map.png");
 		loadTileMap("tilemap1.txt");
-		drawTiles();
+		tilesReady = true;
 	}
 	
 	public void drawTiles(){
@@ -125,4 +124,9 @@ public class TileManager extends JPanel{
 			e.printStackTrace();
 		}
 	}
+	
+	public void update(){
+			drawTiles();
+	}
+
 }
