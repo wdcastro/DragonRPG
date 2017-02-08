@@ -10,7 +10,7 @@ public class GameThread extends Thread{
 	final int MAX_DRAWS = 60;
 	final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
 	
-	final long MILLIS_TO_NANOS = 1000000;
+	
 	
 	SystemState gameState;
 	SpellManager sm;
@@ -32,26 +32,27 @@ public class GameThread extends Thread{
 		gameState = SystemState.IN_BATTLE;
 		pm.start();
 		long lastUpdateTime = System.nanoTime();
-		long timeSinceLastUpdate = 0;// Time Elapsed
+		long timeSinceLastUpdate = 0; // Time Elapsed
 		long timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES;
 		long fpstimer = 0;
 		int fpscount = 0;
 		while(isRunning){
 			timeSinceLastUpdate = System.nanoTime() - lastUpdateTime; // now - last update's timestamp
-			timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES*MILLIS_TO_NANOS-timeSinceLastUpdate;
+			timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES * Game.MILLIS_TO_NANOS - timeSinceLastUpdate;
 			if(timeUntilNextUpdate <= 0){
+				Game.deltaTime();
 				fpscount++;
 				update();
 				lastUpdateTime = System.nanoTime();
 				fpstimer+=timeSinceLastUpdate;
-				if(fpstimer > 1000*MILLIS_TO_NANOS){
+				if(fpstimer > 1000 * Game.MILLIS_TO_NANOS){
 					fpstimer = 0;
-					System.out.println("FPS: "+ fpscount);
+					//System.out.println("FPS: "+ fpscount);
 					fpscount = 0;
 				}
 			} else {
 				try {
-					Thread.sleep(timeUntilNextUpdate/MILLIS_TO_NANOS);
+					Thread.sleep(timeUntilNextUpdate / Game.MILLIS_TO_NANOS);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

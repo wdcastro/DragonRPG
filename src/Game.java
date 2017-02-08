@@ -23,6 +23,8 @@ public class Game extends Application{
 	public static final int SCREEN_WIDTH = 1280;
 	public static final int SCREEN_HEIGHT = 720;
 	
+	public static final long MILLIS_TO_NANOS = 1000000;
+	
 	public static long delta_time = 0;
 	public static long last_time = System.nanoTime();
 	//DeltaTimeThread timethread = new DeltaTimeThread();
@@ -85,13 +87,11 @@ public class Game extends Application{
 		gamethread.start();
 	}
 	
-	public static long deltaTime(){
+	public static void deltaTime(){
 		Boolean isRunning = true;
 		    
 		delta_time = ((System.nanoTime() - last_time));
 		last_time = System.nanoTime();
-		return delta_time;
-
 
 		/*if(System.currentTimeMillis() - start_time >= 1000){
 			System.out.println(totalFrames);

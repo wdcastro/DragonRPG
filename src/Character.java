@@ -15,6 +15,7 @@ abstract public class Character {
 	protected int LUK;
 	protected int cooldownTimer = 0;
 	protected Equipment[] equipment = new Equipment[6];
+	protected boolean isShielded = false;
 	private String[] totalSpells = new String[16];
 	protected String[] mainSpells = new String[4];
 	private String[] auras = new String[4];
@@ -70,10 +71,14 @@ abstract public class Character {
 	 *            - damage to take
 	 */
 	public void takeDamage(int amount) { // can check for death in battlemanager progressFight(), it'll use an if check anyway. using an if check with takeDamage still is one cpu tick
+
+		System.out.println(getName() + " takes " + amount + " damage.");
 		HP -= amount;
 		if (HP <= 0) {
 			HP = 0;
+			System.out.println("HP is 0. " + getName() + " has died.");
 		}
+		System.out.println("Remaining HP is "+HP);
 	}
 
 	/**
@@ -173,12 +178,32 @@ abstract public class Character {
 		}
 	}
 	
+	public void getAttacked(Character attacker, String spell, int damage){
+		if(isShielded){
+			damage = 0;
+			System.out.println(getName()+" was shielded.");
+		}
+		takeDamage(damage);
+	}
+	
 	public int getCooldown(){
 		return cooldownTimer;
 	}
 	
 	public Equipment[] getEquipment(){
 		return equipment;
+	}
+	
+	public String[] getSpells(){
+		return mainSpells;
+	}
+	
+	public void setShield(boolean shield){
+		isShielded = shield;
+	}
+	
+	public boolean isDead(){
+		return HP == 0;
 	}
 
 }

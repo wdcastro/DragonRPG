@@ -12,10 +12,15 @@ public class BattleManager {
 	MoveSelectScreen moveselect;
 	PartyManager partymanager;
 	int currentChar;
+	int shieldedChar = 0;
 	int partysize;
 	long nextPickTimer = 0;
 	long pickTimerDelay = 15000000000L;
 	long testingPickTimerDelay = 5000000000L;
+	final long finalShieldDuration = 750 * Game.MILLIS_TO_NANOS;
+	final long finalShieldCooldown = 5000 * Game.MILLIS_TO_NANOS;
+	long currentShieldDuration = 750 * Game.MILLIS_TO_NANOS;
+	long currentShieldCooldown = 5000 * Game.MILLIS_TO_NANOS;
 	
 	/*
 	 * BATTLE_READY
@@ -27,7 +32,7 @@ public class BattleManager {
 	
 	public BattleManager(){
 		partymanager = new PartyManager();
-		enemyai = new EnemyAI();
+		enemyai = new EnemyAI(partymanager.getParty(), new Slime());
 		moveselect = new MoveSelectScreen(partymanager.getParty());
 		startFight();
 	}
@@ -45,6 +50,19 @@ public class BattleManager {
 			//check for if spellcaster has changed for animations
 		} else {
 			switch(e.getCode()){
+			case TAB:
+				if(nextPickTimer >= testingPickTimerDelay){
+					currentState = BattleState.MOVE_SELECT;
+					nextPickTimer = 0;
+					System.out.println("Entering move select");
+					moveselect.startPick();
+					
+					//pause animations, sounds etc
+				} else {
+					//play cannot sound
+					System.out.println("Pick timer not reached: "+nextPickTimer/1000000000L);
+				}
+				break;
 			case Q:
 				System.out.println("Switching char 0");
 				currentChar = 0;
@@ -94,16 +112,14 @@ public class BattleManager {
 					System.out.println("Spell on cd");
 				}
 			} else if (e.getButton() == MouseButton.SECONDARY){
-				if(nextPickTimer >= testingPickTimerDelay){
-					currentState = BattleState.MOVE_SELECT;
-					nextPickTimer = 0;
-					System.out.println("Entering move select");
-					moveselect.startPick();
-					
-					//pause animations, sounds etc
+				if(currentShieldCooldown >= finalShieldCooldown){
+					System.out.println("Activating shield");
+					shieldedChar = currentChar;
+					partymanager.getParty().get(currentChar).setShield(true);
+					currentShieldCooldown = 0;
+					currentShieldDuration = 0;
 				} else {
-					//play cannot sound
-					System.out.println("Pick timer not reached: "+nextPickTimer/1000000000L);
+					System.out.println("Shield on cooldown. Time remaining : " + ((finalShieldCooldown-currentShieldCooldown)/(Game.MILLIS_TO_NANOS*1000)));
 				}
 			}
 		}
@@ -117,6 +133,7 @@ public class BattleManager {
 		currentChar = 0;
 		partysize = partymanager.getParty().size();
 		currentState = BattleState.MOVE_SELECT;
+		enemyai.start();
 	}
 
 	
@@ -126,7 +143,25 @@ public class BattleManager {
 	
 	synchronized public void update(){
 		if(currentState == BattleState.IN_BATTLE){
-			nextPickTimer += Game.deltaTime();
+			nextPickTimer += Game.delta_time;
+			enemyai.update();
+		}
+		
+		
+		
+		if(currentShieldCooldown < finalShieldCooldown){
+			currentShieldCooldown += Game.delta_time;
+			
+			if(partymanager.getParty().get(shieldedChar).isShielded){
+				if(currentShieldDuration < finalShieldDuration){
+					currentShieldDuration += Game.delta_time;
+				} else {
+					System.out.println("Shield turned off.");
+					partymanager.getParty().get(shieldedChar).setShield(false);
+				}
+			}
+			
+			
 		}
 	}
 	

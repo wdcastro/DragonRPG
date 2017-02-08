@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class PartyManager {
 	
-	BlackDragon black = new BlackDragon("Black", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-	WhiteDragon white = new WhiteDragon("random grill", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	BlackDragon black = new BlackDragon("Black", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000);
+	WhiteDragon white = new WhiteDragon("random grill", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000);
 	ArrayList<Character> party = new ArrayList<Character>();
 	
 	public PartyManager(){
