@@ -1,6 +1,7 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
@@ -10,7 +11,7 @@ public class MoveSelectScreen {
 	 * TODO: limit party size casters
 	 */
 	
-	ArrayList<String> spellqueue = new ArrayList<String>();
+	ArrayList<String> spellqueue;
 	//ArrayList<Character> casterqueue = new ArrayList<Character>();
 	
 	int[] spellintegers;
@@ -43,6 +44,7 @@ public class MoveSelectScreen {
 		currentCaster = 0;	
 		spellintegers = new int[numCasters];
 		isPicking = true;
+		spellqueue = new ArrayList<String>();
 	}
 	
 	public void finishPick(){
@@ -56,10 +58,11 @@ public class MoveSelectScreen {
 	}
 	
 	public void handleMouseClick(MouseEvent e){
-		if(SwingUtilities.isLeftMouseButton(e)){
+		System.out.println("MoveSelectScreen:: handleMouseClick");
+		if(e.isPrimaryButtonDown()){
 			//finish picking, give arrays to battle manager
 			finishPick();
-		} else if (SwingUtilities.isRightMouseButton(e)){
+		} else if (e.isSecondaryButtonDown()){
 			//undo pick, maybe move this to its own method
 			if(currentCaster > 0){
 				currentCaster--;
@@ -68,7 +71,6 @@ public class MoveSelectScreen {
 				//play cannot sound
 			}
 		}
-		
 	}
 	
 	public void handleKeyRelease(KeyEvent e){
@@ -77,17 +79,17 @@ public class MoveSelectScreen {
 		 * currentHighlighted = player.equipment.getSpell(int)
 		 * on x
 		 */
-		switch(e.getKeyCode()){
-		case KeyEvent.VK_Q:
+		switch(e.getCode()){
+		case Q:
 			pickSpell(0);
 			break;
-		case KeyEvent.VK_W:
+		case W:
 			pickSpell(1);
 			break;
-		case KeyEvent.VK_E:
+		case E:
 			pickSpell(2);
 			break;
-		case KeyEvent.VK_R:
+		case R:
 			pickSpell(3);
 			break;
 		}

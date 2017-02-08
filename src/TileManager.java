@@ -1,9 +1,13 @@
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -23,10 +27,13 @@ public class TileManager extends JPanel{
 	int remainingFileSize;
 	int currentOffset = 0;
 	
-	BufferedImage image;
-	BufferedImage tileToDraw = new BufferedImage(512,512,BufferedImage.TYPE_INT_RGB);
+	Image image;
+	Image tileToDraw;
 	
-	public TileManager(){
+	GraphicsContext context;
+	
+	public TileManager(GraphicsContext gc){
+		context = gc;
 		testarray[0] = 199;
 		for(int i = 1; i< 40; i++){
 			testarray[i]=0;
@@ -39,9 +46,10 @@ public class TileManager extends JPanel{
 		}
 		loadMapImage("map.png");
 		loadTileMap("tilemap1.txt");
+		drawTiles();
 	}
 	
-	public void drawTiles(Graphics g){
+	public void drawTiles(){
 		/*
 		 * for tilearray.length
 		 * drawtile
@@ -49,12 +57,16 @@ public class TileManager extends JPanel{
 		 */
 		int currentHeight = 0;
 		int currentWidth = 0;
+		
+		//ImageView view = new ImageView(image);
+		context.drawImage(image, 0, 0);
+		//view.setViewport(new Rectangle2D(0,0,32,32));
 
 		
 		
-		for(int i = 0; i< tilearray.length; i++){
+		/*for(int i = 0; i< tilearray.length; i++){
 			tileToDraw = image.getSubimage((tilearray[i]%16)*32,32*(tilearray[i]/16), TILE_WIDTH, TILE_HEIGHT);
-			g.drawImage(tileToDraw, currentWidth*TILE_WIDTH, currentHeight*TILE_HEIGHT, null); //draw tiles
+			//gc.drawImage(tileToDraw, currentWidth*TILE_WIDTH, currentHeight*TILE_HEIGHT); //draw tiles
 			currentWidth++;
 			if(currentWidth%40 == 0 && i!= 0){
 				System.out.println("increasing height i is: "+ i);
@@ -62,15 +74,14 @@ public class TileManager extends JPanel{
 				currentHeight++;
 				System.out.println("new currentHeight is " + currentHeight);
 			}
-		}
+		}*/
 	}
 	
 	public void loadMapImage(String path){
 		File file = new File(path);
-		try {
-			image = ImageIO.read(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		try{
+			image = new Image(file.toURI().toString());
+		} catch(Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -98,24 +109,18 @@ public class TileManager extends JPanel{
 			
 			in.close();
 			String textToPrint = new String(bytesRead, "UTF-8");
-			System.out.println(textToPrint);
+			//System.out.println(textToPrint);
 			
 			String[] mapStrArray = textToPrint.split(",");
 
 			tilearray = new int[mapStrArray.length];
 			for(int i = 0; i< mapStrArray.length; i++){
 				tilearray[i] = Integer.parseInt(mapStrArray[i]);
-				System.out.print(tilearray[i]);
+				//System.out.print(tilearray[i]);
 			}
 			
 		} catch(Exception e){
-			
+			e.printStackTrace();
 		}
-	}
-	
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-		drawTiles(g);
-		System.out.println("redrawing");
 	}
 }

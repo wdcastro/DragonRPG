@@ -1,8 +1,8 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import javax.swing.SwingUtilities;
 
+import java.util.ArrayList;
+
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class BattleManager {
 // controls characters, status effects, damage, hp, etc
@@ -43,12 +43,12 @@ public class BattleManager {
 			moveselect.handleKeyRelease(e);
 			//check for if spellcaster has changed for animations
 		} else {
-			switch(e.getKeyCode()){
-			case KeyEvent.VK_Q:
+			switch(e.getCode()){
+			case Q:
 				System.out.println("Switching char 0");
 				currentChar = 0;
 				break;
-			case KeyEvent.VK_W:
+			case W:
 				if(partysize > 1){
 					System.out.println("Switching char 1");
 					currentChar = 1;
@@ -56,7 +56,7 @@ public class BattleManager {
 					System.out.println("Cannot switch char, size too small");
 				}
 				break;
-			case KeyEvent.VK_E:
+			case E:
 				if(partysize > 2){
 					System.out.println("Switching char 2");
 					currentChar = 2;
@@ -64,7 +64,7 @@ public class BattleManager {
 					System.out.println("Cannot switch char, size too small");
 				}
 				break;
-			case KeyEvent.VK_R:
+			case R:
 				if(partysize > 3){
 					System.out.println("Switching char 3");
 					currentChar = 3;
@@ -77,6 +77,7 @@ public class BattleManager {
 	}
 	
 	public void doMouseAction(MouseEvent e){
+		System.out.println("BattleManager:: doMouseAction");
 		if(currentState == BattleState.MOVE_SELECT){
 			moveselect.handleMouseClick(e);
 			if(moveselect.isPicking == false){
@@ -85,14 +86,14 @@ public class BattleManager {
 				spellqueue = moveselect.getSpellQueue();
 			}
 		} else if(currentState == BattleState.IN_BATTLE){
-			if(SwingUtilities.isLeftMouseButton(e)){ // Possible efficiency increase here, cpu calls on ArrayList
+			if(e.isPrimaryButtonDown()){ // Possible efficiency increase here, cpu calls on ArrayList
 				if(spellqueue.get(currentChar)!= "cd"){
 					System.out.println("Casting spell " + spellqueue.get(currentChar));
 					spellqueue.set(currentChar, "cd");
 				} else {
 					System.out.println("Spell on cd");
 				}
-			} else if (SwingUtilities.isRightMouseButton(e)){
+			} else if (e.isSecondaryButtonDown()){
 				if(nextPickTimer >= testingPickTimerDelay){
 					currentState = BattleState.MOVE_SELECT;
 					nextPickTimer = 0;
