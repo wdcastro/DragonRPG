@@ -5,9 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -58,23 +61,22 @@ public class TileManager extends JPanel{
 		int currentHeight = 0;
 		int currentWidth = 0;
 		
-		//ImageView view = new ImageView(image);
-		context.drawImage(image, 0, 0);
-		//view.setViewport(new Rectangle2D(0,0,32,32));
-
+		ImageView view = new ImageView(image);
+		WritableImage croppedImage;
 		
 		
-		/*for(int i = 0; i< tilearray.length; i++){
-			tileToDraw = image.getSubimage((tilearray[i]%16)*32,32*(tilearray[i]/16), TILE_WIDTH, TILE_HEIGHT);
-			//gc.drawImage(tileToDraw, currentWidth*TILE_WIDTH, currentHeight*TILE_HEIGHT); //draw tiles
+		for(int i = 0; i< tilearray.length; i++){
+			view.setViewport(new Rectangle2D((tilearray[i]%16)*32,(tilearray[i]/16)*32,32,32));
+			croppedImage = view.snapshot(null, null);
+			context.drawImage(croppedImage, currentWidth*32, currentHeight*32);
 			currentWidth++;
 			if(currentWidth%40 == 0 && i!= 0){
-				System.out.println("increasing height i is: "+ i);
+				//System.out.println("increasing height i is: "+ i);
 				currentWidth = 0;
 				currentHeight++;
-				System.out.println("new currentHeight is " + currentHeight);
+				//System.out.println("new currentHeight is " + currentHeight);
 			}
-		}*/
+		}
 	}
 	
 	public void loadMapImage(String path){
