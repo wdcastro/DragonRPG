@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class BattleManager {
@@ -77,7 +78,6 @@ public class BattleManager {
 	}
 	
 	public void doMouseAction(MouseEvent e){
-		System.out.println("BattleManager:: doMouseAction");
 		if(currentState == BattleState.MOVE_SELECT){
 			moveselect.handleMouseClick(e);
 			if(moveselect.isPicking == false){
@@ -86,14 +86,14 @@ public class BattleManager {
 				spellqueue = moveselect.getSpellQueue();
 			}
 		} else if(currentState == BattleState.IN_BATTLE){
-			if(e.isPrimaryButtonDown()){ // Possible efficiency increase here, cpu calls on ArrayList
+			if(e.getButton() == MouseButton.PRIMARY){ // Possible efficiency increase here, cpu calls on ArrayList
 				if(spellqueue.get(currentChar)!= "cd"){
 					System.out.println("Casting spell " + spellqueue.get(currentChar));
 					spellqueue.set(currentChar, "cd");
 				} else {
 					System.out.println("Spell on cd");
 				}
-			} else if (e.isSecondaryButtonDown()){
+			} else if (e.getButton() == MouseButton.SECONDARY){
 				if(nextPickTimer >= testingPickTimerDelay){
 					currentState = BattleState.MOVE_SELECT;
 					nextPickTimer = 0;
@@ -126,7 +126,7 @@ public class BattleManager {
 	
 	synchronized public void update(){
 		if(currentState == BattleState.IN_BATTLE){
-			nextPickTimer += Game.delta_time;
+			nextPickTimer += Game.deltaTime();
 		}
 	}
 	

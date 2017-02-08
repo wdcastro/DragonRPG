@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import javax.swing.SwingUtilities;
@@ -58,11 +59,10 @@ public class MoveSelectScreen {
 	}
 	
 	public void handleMouseClick(MouseEvent e){
-		System.out.println("MoveSelectScreen:: handleMouseClick");
-		if(e.isPrimaryButtonDown()){
+		if(e.getButton() == MouseButton.PRIMARY){
 			//finish picking, give arrays to battle manager
 			finishPick();
-		} else if (e.isSecondaryButtonDown()){
+		} else if (e.getButton() == MouseButton.SECONDARY){
 			//undo pick, maybe move this to its own method
 			if(currentCaster > 0){
 				currentCaster--;

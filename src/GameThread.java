@@ -7,17 +7,16 @@ public class GameThread extends Thread{
 	SpellManager sm;
 	BattleManager bm;
 	TileManager tiles;
-	
 
-	MusicPlaybackThread mp = new MusicPlaybackThread("abc.mp3");
+	MusicPlayback mp = new MusicPlayback();
 	
-	long last_time = System.nanoTime();		
-	int totalFrames = 0;
-	int current_game_tick = 0;
+	
+	
+	boolean isRunning = true;
+
 	
 	public GameThread(GraphicsContext gc){
-		gameState = SystemState.IN_BATTLE;
-		// currently highlighted
+		
 		sm = new SpellManager();
 		bm = new BattleManager();		
 		tiles = new TileManager(gc);
@@ -25,7 +24,11 @@ public class GameThread extends Thread{
 	}
 	
 	public void run(){
+		gameState = SystemState.IN_BATTLE;
 		mp.start();
+		while(isRunning){
+			update();
+		}
 	}
 	
 	public void update(){
@@ -47,9 +50,7 @@ public class GameThread extends Thread{
 	}
 	
 	public void handleMouseClick(MouseEvent e){
-		System.out.println("GameThread:: handleMouseClick");
 		if(gameState == SystemState.IN_BATTLE){
-			System.out.println("is in battle");
 			bm.doMouseAction(e);
 		} else {
 			doMouse(e);
@@ -73,7 +74,7 @@ public class GameThread extends Thread{
 	
 	public void stopAllThreads(){
 		System.out.println("Stopping all threads");
-		mp.stopMusic();
-		
+		mp.stopMusic();		
+		isRunning = false;		
 	}
 }
