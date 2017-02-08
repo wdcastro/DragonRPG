@@ -60,14 +60,12 @@ public class TileManager extends Thread{
 		int currentHeight = 0;
 		int currentWidth = 0;
 		
-		ImageView view = new ImageView(image);
-		WritableImage croppedImage;
+		//ImageView view = new ImageView(image);
+		//WritableImage croppedImage;
 		
 		
 		for(int i = 0; i< tilearray.length; i++){
-			view.setViewport(new Rectangle2D((tilearray[i]%16)*32,(tilearray[i]/16)*32,32,32));
-			croppedImage = view.snapshot(null, null);
-			context.drawImage(croppedImage, currentWidth*32, currentHeight*32);
+			context.drawImage(image, (tilearray[i]%16)*32, (tilearray[i]/16)*32, 32, 32, currentWidth*32, currentHeight*32, 32, 32);
 			currentWidth++;
 			if(currentWidth%40 == 0 && i!= 0){
 				//System.out.println("increasing height i is: "+ i);

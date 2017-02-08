@@ -132,13 +132,8 @@ public class Game extends Application{
                     double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame ;
                     System.out.println("Current frame rate: "+ frameRate);
                 }
-				//if(now - lastUpdate >= MILLIS_BETWEEN_FRAMES * Game.MILLIS_TO_NANOS){
 					gamethread.update();
-				//}
-				//if(now - lastUpdate >= MILLIS_BETWEEN_DRAWS * Game.MILLIS_TO_NANOS){
 					tiles.update();
-				//}
-				//lastUpdate = now;
 			}
 			
 		}.start();
