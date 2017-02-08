@@ -20,7 +20,6 @@ public class GameThread extends Thread{
 	
 	public void update(){
 		bm.update();
-		
 	}
 	
 	public void handleKeyRelease(KeyEvent e){

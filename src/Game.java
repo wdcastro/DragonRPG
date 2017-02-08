@@ -8,6 +8,8 @@ public class Game {
 	public static final int FRAME_SKIPS = 1000/MAX_FPS;
 	public static final int MAX_FRAME_SKIP = 10;
 	
+	public static final int SCREEN_WIDTH = 1280;
+	public static final int SCREEN_HEIGHT = 720;
 	
 	
 

@@ -95,7 +95,10 @@ public class BattleManager {
 			} else if (SwingUtilities.isRightMouseButton(e)){
 				if(nextPickTimer >= testingPickTimerDelay){
 					currentState = BattleState.MOVE_SELECT;
+					nextPickTimer = 0;
 					System.out.println("Entering move select");
+					moveselect.startPick();
+					
 					//pause animations, sounds etc
 				} else {
 					//play cannot sound

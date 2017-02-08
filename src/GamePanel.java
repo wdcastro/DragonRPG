@@ -13,13 +13,15 @@ public class GamePanel extends JFrame implements KeyListener, MouseListener, Foc
 	
 	boolean xDown = false;
 	GameThread gamethread;
+	TileManager tiles = new TileManager();
 
 	
 	public GamePanel(){
-		this.setSize(600,600);
+		this.setSize(Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT);
 		this.setTitle("Amazing RPG Simulator 2017");
 		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.add(tiles);
 		addFocusListener(this);
 		addKeyListener(this);
 		addMouseListener(this);
