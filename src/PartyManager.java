@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class PartyManager {
 	
-	BlackDragon black = new BlackDragon("Black", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000);
+	BlackDragon black = new BlackDragon("Black", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 100);
 	WhiteDragon white = new WhiteDragon("random grill", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000);
 	ArrayList<Character> party = new ArrayList<Character>();
 	

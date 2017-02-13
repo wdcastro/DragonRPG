@@ -2,88 +2,95 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-public class GameThread extends Thread{
-	
-	/*final int MAX_FPS = 100;
-	final int MILLIS_BETWEEN_FRAMES = 1000/MAX_FPS;
-
-	final int MAX_DRAWS = 60;
-	final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
-	*/
-	
-	
+public class GameThread extends Thread{	
 	
 	SystemState gameState;
-	SpellManager sm;
-	BattleManager bm;
+	SpellManager spellmanager;
+	BattleManager battlemanager;
+	
+	MapManager mapmanager;
 
-	PlaylistManager pm = new PlaylistManager();
+	PlaylistManager playlistmanager = new PlaylistManager();
+
 	
 	boolean isRunning = true;
 
 	
 	public GameThread(GraphicsContext gc){
-		sm = new SpellManager();
-		bm = new BattleManager();			
+		spellmanager = new SpellManager();
+		battlemanager = new BattleManager();
+		mapmanager = new MapManager(gc);
 	}
 	
 	public void run(){
-		gameState = SystemState.IN_BATTLE;
-		pm.start();
-		/*long lastUpdateTime = System.nanoTime();
-		long timeSinceLastUpdate = 0; // Time Elapsed
-		long timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES;
-		long fpstimer = 0;
-		int fpscount = 0;
-		
-		//while(isRunning){
-			timeSinceLastUpdate = System.nanoTime() - lastUpdateTime; // now - last update's timestamp
-			timeUntilNextUpdate = MILLIS_BETWEEN_FRAMES * Game.MILLIS_TO_NANOS - timeSinceLastUpdate;
-			if(timeUntilNextUpdate <= 0){
-				Game.deltaTime();
-				fpscount++;
-				update();
-				lastUpdateTime = System.nanoTime();
-				fpstimer+=timeSinceLastUpdate;
-				if(fpstimer > 1000 * Game.MILLIS_TO_NANOS){
-					fpstimer = 0;
-					System.out.println("FPS: "+ fpscount);
-					fpscount = 0;
-				}
-			} else {
-				try {
-					Thread.sleep(timeUntilNextUpdate / Game.MILLIS_TO_NANOS);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			*/
-		//}
+		gameState = SystemState.IN_CITY;
+		playlistmanager.start();
+		mapmanager.start();
 	}
 	
 	public void update(){
-		bm.update();
+		playlistmanager.update();
+		switch (gameState){
+		case IN_BATTLE:
+			battlemanager.update();
+			//hud update
+			break;
+		case IN_CITY:
+			//tiles.update();
+			mapmanager.update();
+			//should only be called when moving, unless water animations or some shit idk
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void draw(){
+		switch (gameState){
+		case IN_BATTLE:
+			break;
+		case IN_CITY:
+			//tiles.draw();
+			//should only be called when moving
+		case MAIN_MENU:
+			break;
+		case WORLD_MAP:
+			break;
+		default:
+			break;
+		}
+		
 	}
 	
 	public void handleKeyRelease(KeyEvent e){
 		if(e.getCode().toString() == "DIGIT0"){
-			pm.togglePause();
+			playlistmanager.togglePause();
+			return;
+		} else if(e.getCode().toString() == "DIGIT9"){
+			playlistmanager.nextSong();
+			return;
 		} else {
-			if(gameState == SystemState.IN_BATTLE){
-				bm.doKeyboardAction(e);
-			} else {
+			switch(gameState){
+			case IN_BATTLE:
+				battlemanager.doKeyboardAction(e);
+				break;
+			case IN_CITY:
+				mapmanager.doKeyboardAction(e);
+			default:
 				doKeyRelease(e);
+				break;
 			}
 		}
 	}
 	
 	public void handleMouseClick(MouseEvent e){
-		if(gameState == SystemState.IN_BATTLE){
-			bm.doMouseAction(e);
-		} else {
+		switch(gameState){
+		case IN_BATTLE:
+			battlemanager.doMouseAction(e);
+			break;
+		default:
 			doMouse(e);
+			break;
 		}
 	}
 	
@@ -94,6 +101,8 @@ public class GameThread extends Thread{
 			break;
 		case Z:
 			// some other action 
+			break;
+		default:
 			break;	
 		}
 	}
@@ -104,7 +113,7 @@ public class GameThread extends Thread{
 	
 	public void stopAllThreads(){
 		System.out.println("Stopping all threads");
-		pm.stopMusic();		
+		playlistmanager.stopMusic();		
 		isRunning = false;		
 	}
 }

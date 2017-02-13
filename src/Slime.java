@@ -32,9 +32,9 @@ public class Slime extends Character {
 		maxMana = 10;
 		ATK = 1;
 		DEF = 1;
-		SPD = 1;
-		MGC = 1;
-		LUK = 1;
+		MGC_ATK = 1;
+		MGC_DEF = 1;
+		MGC_HEAL = 1;
 		cooldownTimer = 0;
 		mainSpells = new String[] {"Splash", "Blob", "Tackle", "Shapeshift"};
 		

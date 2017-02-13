@@ -1,0 +1,9 @@
+
+public enum MenuStates {
+HIDDEN,
+SAVE_SCREEN,
+SETTINGS,
+INVENTORY,
+SPELLS,
+PARTY
+}

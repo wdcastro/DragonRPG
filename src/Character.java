@@ -10,15 +10,14 @@ abstract public class Character {
 	protected int maxMana;
 	protected int ATK;
 	protected int DEF;
-	protected int SPD;
-	protected int MGC;
-	protected int LUK;
+	protected int MGC_ATK;
+	protected int MGC_DEF;
+	protected int MGC_HEAL;
 	protected int cooldownTimer = 0;
 	protected Equipment[] equipment = new Equipment[6];
 	protected boolean isShielded = false;
-	private String[] totalSpells = new String[16];
+	private String[] totalSpells = new String[15];
 	protected String[] mainSpells = new String[4];
-	private String[] auras = new String[4];
 
 	public void setName(String name) {
 		this.name = name;
@@ -52,17 +51,18 @@ abstract public class Character {
 		return DEF;
 	}
 
-	public int getSPD() {
-		return SPD;
+	public int getMGCATK() {
+		return MGC_ATK;
+	}
+	
+	public int getMGCDEF() {
+		return MGC_DEF;
+	}
+	
+	public int getMGCHEAL() {
+		return MGC_HEAL;
 	}
 
-	public int getMGC() {
-		return MGC;
-	}
-
-	public int getLUK() {
-		return LUK;
-	}
 
 	/**
 	 * Character takes damage specified by parameter
@@ -112,14 +112,14 @@ abstract public class Character {
 		case "DEF":
 			DEF += amount;
 			break;
-		case "SPD":
-			SPD += amount;
+		case "MGC_ATK":
+			MGC_ATK += amount;
 			break;
-		case "MGC":
-			MGC += amount;
+		case "MGC_DEF":
+			MGC_DEF += amount;
 			break;
-		case "LUK":
-			LUK += amount;
+		case "MGC_HEAL":
+			MGC_HEAL += amount;
 			break;
 		default:
 			break;
@@ -155,22 +155,22 @@ abstract public class Character {
 				DEF = 0;
 			}
 			break;
-		case "SPD":
-			SPD -= amount;
-			if(SPD < 0){
-				SPD = 0;
+		case "MGC_ATK":
+			MGC_ATK -= amount;
+			if(MGC_ATK < 0){
+				MGC_ATK = 0;
 			}
 			break;
-		case "MGC":
-			MGC -= amount;
-			if(MGC < 0){
-				MGC = 0;
+		case "MGC_DEF":
+			MGC_DEF -= amount;
+			if(MGC_DEF < 0){
+				MGC_DEF = 0;
 			}
 			break;
-		case "LUK":
-			LUK -= amount;
-			if(LUK < 0){
-				LUK = 0;
+		case "MGC_HEAL":
+			MGC_HEAL -= amount;
+			if(MGC_HEAL < 0){
+				MGC_HEAL = 0;
 			}
 			break;
 		default:
