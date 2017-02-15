@@ -15,6 +15,8 @@ public class MapManager extends Thread{
 	private int camU = 0;
 	private int camD = 21;
 	
+	private boolean isReady = false;
+	
 	MapLocation currentLocation = MapLocation.TEST_CITY;
 	TileManager tilemanager;
 	
@@ -27,8 +29,14 @@ public class MapManager extends Thread{
 
 	}
 	
+	synchronized public boolean isReady(){
+		return isReady;
+	}
+	
 	public void run(){
 		loadCity();
+
+		isReady = true;
 		draw();
 	}
 
@@ -58,7 +66,7 @@ public class MapManager extends Thread{
 		if(playerx>tilemanager.getMapHeight()){
 			playerx = tilemanager.getMapHeight();
 		}
-		if(playery-camU<Game.SCREEN_HEIGHT/64){
+		if(playery-camU<(Game.SCREEN_HEIGHT/2)/tilemanager.getTileHeight()){
 			System.out.println("player not centered, not moving cam");
 			return;
 		}
@@ -77,7 +85,7 @@ public class MapManager extends Thread{
 		if(playery<0){
 			playery=0;
 		}
-		if(camD-playery<Game.SCREEN_HEIGHT/64){
+		if(camD-playery>(Game.SCREEN_HEIGHT/2)/tilemanager.getTileHeight()){
 			System.out.println("player not centered, not moving cam");
 			return;
 		}
@@ -96,7 +104,7 @@ public class MapManager extends Thread{
 		if(playerx<0){
 			playerx = 0;
 		}
-		if(camR-playerx<Game.SCREEN_WIDTH/64){
+		if(camR-playerx>(Game.SCREEN_WIDTH/2)/tilemanager.getTileWidth()){
 			System.out.println("player not centered, not moving cam");
 			return;
 		}
@@ -115,7 +123,7 @@ public class MapManager extends Thread{
 		if(playerx>tilemanager.getMapWidth()){
 			playerx = tilemanager.getMapWidth();
 		}
-		if(playerx-camL<Game.SCREEN_WIDTH/64){
+		if(playerx-camL<Game.SCREEN_WIDTH/(2*tilemanager.getTileWidth())){
 			System.out.println("player not centered, not moving cam");
 			return;
 		}

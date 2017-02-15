@@ -5,6 +5,7 @@ public class PlaylistManager extends Thread{
 	MusicPlayback mp;
 	int currentSong = 0;
 	ArrayList<String> playlist = new ArrayList<String>();
+	private boolean isReady = false;
 	
 	public PlaylistManager(){
 		
@@ -28,6 +29,11 @@ public class PlaylistManager extends Thread{
 	public void run(){
 		loadPlaylist("default.txt");
 		playSong(playlist.get(currentSong));
+		isReady = true;
+	}
+	
+	synchronized public boolean isReady(){
+		return isReady;
 	}
 	
 	public void update(){

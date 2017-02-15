@@ -1,0 +1,6 @@
+
+public enum GameState {
+	WORLD_MAP,
+	IN_CITY,
+	IN_BATTLE
+}

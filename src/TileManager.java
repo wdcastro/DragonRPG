@@ -83,14 +83,14 @@ public class TileManager{
 	}
 	
 	public void drawPlayer(int x, int y, int up, int left){
-		context.drawImage(image, (player_tile%TILES_PER_LINE_IN_SOURCE)*TILE_WIDTH, (player_tile/TILES_PER_LINE_IN_SOURCE)*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, (x-left)*TILE_WIDTH, (y-up)*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+		context.drawImage(image, (player_tile%TILES_PER_LINE_IN_SOURCE)*getTileWidth(), (player_tile/TILES_PER_LINE_IN_SOURCE)*getTileHeight(), getTileWidth(), getTileHeight(), (x-left)*getTileWidth(), (y-up)*getTileHeight(), getTileWidth(), getTileHeight());
 	}
 	
 	public void drawTrim(int up, int left, int j){
-		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/TILE_WIDTH;
-		int numRowsDownToDraw = Game.SCREEN_HEIGHT/TILE_HEIGHT;
+		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/getTileWidth();
+		int numRowsDownToDraw = Game.SCREEN_HEIGHT/getTileHeight();
 		int firstTile = (MAP_WIDTH*up)+left;
-		System.out.println("firstTile is "+firstTile);
+		//System.out.println("firstTile is "+firstTile);
 		
 		
 		int[] layer;
@@ -106,7 +106,7 @@ public class TileManager{
 		for(int currentRow = 0; currentRow < numRowsDownToDraw; currentRow++){
 			for(int currentTileInRow = 0; currentTileInRow < numTilesAcrossToDraw; currentTileInRow++){
 				if(layer[firstTile+currentTileInRow+currentRow*MAP_WIDTH]!=-1){
-					context.drawImage(image, (layer[firstTile+currentTileInRow+currentRow*MAP_WIDTH]%TILES_PER_LINE_IN_SOURCE)*TILE_WIDTH, (layer[firstTile+currentTileInRow+currentRow*MAP_WIDTH]/TILES_PER_LINE_IN_SOURCE)*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, currentTileInRow * TILE_WIDTH, currentRow * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+					context.drawImage(image, (layer[firstTile+currentTileInRow+currentRow*MAP_WIDTH]%TILES_PER_LINE_IN_SOURCE)*getTileWidth(), (layer[firstTile+currentTileInRow+currentRow*MAP_WIDTH]/TILES_PER_LINE_IN_SOURCE)*getTileHeight(), getTileWidth(), getTileHeight(), currentTileInRow * getTileWidth(), currentRow * getTileHeight(), getTileWidth(), getTileHeight());
 				}
 			}
 		}
@@ -117,7 +117,7 @@ public class TileManager{
 		File file = new File(path);
 		try{
 			image = new Image(file.toURI().toString());
-			TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/TILE_WIDTH);
+			TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 			System.out.println("Tiles per line in source is "+TILES_PER_LINE_IN_SOURCE);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class TileManager{
 	public void loadTileMap(String mapname){
 		loadMapInfo(mapname+"_MapInfo.txt");
 		loadMapImage(imgsrc);
-		TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/TILE_WIDTH);
+		TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 		loadTileLayer(mapname+"_Tile Layer 1.csv", 1);
 		loadTileLayer(mapname+"_Tile Layer 2.csv", 2);
 	}
@@ -155,13 +155,13 @@ public class TileManager{
 					break;
 				case "tilewidth":
 					i++;
-					TILE_WIDTH = Integer.parseInt(info[i]);
-					System.out.println("TILE_WIDTH  is "+TILE_WIDTH);
+					setTileWidth(Integer.parseInt(info[i]));
+					System.out.println("TILE_WIDTH  is "+getTileWidth());
 					break;
 				case "tileheight":
 					i++;
-					TILE_HEIGHT = Integer.parseInt(info[i]);
-					System.out.println("TILE_HEIGHT is "+TILE_HEIGHT);
+					setTileHeight(Integer.parseInt(info[i]));
+					System.out.println("TILE_HEIGHT is "+getTileHeight());
 					break;
 				case "source":
 					i++;
@@ -206,6 +206,26 @@ public class TileManager{
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	public int getTileHeight() {
+		return TILE_HEIGHT;
+	}
+
+
+	public void setTileHeight(int tILE_HEIGHT) {
+		TILE_HEIGHT = tILE_HEIGHT;
+	}
+
+
+	public int getTileWidth() {
+		return TILE_WIDTH;
+	}
+
+
+	public void setTileWidth(int tILE_WIDTH) {
+		TILE_WIDTH = tILE_WIDTH;
 	}
 	
 	

@@ -4,28 +4,52 @@ import javafx.scene.input.MouseEvent;
 
 public class GameThread extends Thread{	
 	
-	SystemState gameState;
+	GameState gameState;
 	SpellManager spellmanager;
 	BattleManager battlemanager;
 	
+	GraphicsContext context;
+	
 	MapManager mapmanager;
 
-	PlaylistManager playlistmanager = new PlaylistManager();
+	PlaylistManager playlistmanager;
 
 	
-	boolean isRunning = true;
+	private boolean isRunning = false;
+	private boolean isReady = false;
 
 	
 	public GameThread(GraphicsContext gc){
-		spellmanager = new SpellManager();
-		battlemanager = new BattleManager();
-		mapmanager = new MapManager(gc);
+		context = gc;
 	}
 	
 	public void run(){
-		gameState = SystemState.IN_CITY;
+
+		isRunning = true;
+		playlistmanager = new PlaylistManager();
+		spellmanager = new SpellManager();
+		battlemanager = new BattleManager();
+		playlistmanager = new PlaylistManager();
+		mapmanager = new MapManager(context);
+		gameState = GameState.IN_CITY;
+		
 		playlistmanager.start();
 		mapmanager.start();
+		
+		while(!playlistmanager.isReady() || !mapmanager.isReady()){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		isReady = true;
+		
+	}
+	
+	synchronized public boolean isReady(){
+		return isReady;
 	}
 	
 	public void update(){
@@ -36,9 +60,8 @@ public class GameThread extends Thread{
 			//hud update
 			break;
 		case IN_CITY:
-			//tiles.update();
 			mapmanager.update();
-			//should only be called when moving, unless water animations or some shit idk
+			
 			break;
 		default:
 			break;
@@ -50,9 +73,8 @@ public class GameThread extends Thread{
 		case IN_BATTLE:
 			break;
 		case IN_CITY:
-			//tiles.draw();
-			//should only be called when moving
-		case MAIN_MENU:
+			mapmanager.draw();
+			//should only be called when moving, unless water animations or some shit idk
 			break;
 		case WORLD_MAP:
 			break;
