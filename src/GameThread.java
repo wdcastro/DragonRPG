@@ -24,7 +24,6 @@ public class GameThread extends Thread{
 	}
 	
 	public void run(){
-
 		isRunning = true;
 		playlistmanager = new PlaylistManager();
 		spellmanager = new SpellManager();

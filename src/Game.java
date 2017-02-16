@@ -26,11 +26,11 @@ public class Game extends Application{
 	
 
 	
-	public static final int MAX_FPS = 100;
-	public static final int MILLIS_BETWEEN_FRAMES = 1000/MAX_FPS;
+//	public static final int MAX_FPS = 100;
+	//public static final int MILLIS_BETWEEN_FRAMES = 1000/MAX_FPS;
 
-	public static final int MAX_DRAWS = 60;
-	public static final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
+	//public static final int MAX_DRAWS = 60;
+	//public static final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
 	
 	public static final int SCREEN_WIDTH = 1920;
 	public static final int SCREEN_HEIGHT = 1080;
@@ -41,13 +41,18 @@ public class Game extends Application{
 	public static long last_time = System.nanoTime();
 	public static final String newLine = System.getProperty("line.separator");
 	
-	public static boolean hasClicked = false;
+	private boolean hasClicked = false;
 	
-	public static SystemState systemstate;
-	public static GameThread gamethread;
-	public static Scene scene;
-	public static Group root;
-	public static VBox vb;
+	private SystemState systemstate;
+	private Scene scene;
+	private Group root;
+	private Canvas canvas;
+	private GameThread gamethread;
+	private GraphicsContext context;
+	private MainMenu mainmenu;
+	private Label label;
+	private AnimationTimer updateLoop;
+	
 	
 	public static void main(String args[]){
 		launch();
@@ -58,31 +63,27 @@ public class Game extends Application{
 		// display splash screens
 		// load user configs
 		// initialise things
-
+		// set up graphics groups
+		
 		root = new Group();
-		scene = new Scene(root, Color.BLACK);
-		Canvas canvas = new Canvas(Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
-		root.getChildren().add(canvas);
+		scene = new Scene(root,Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT, Color.BLACK);		
+		canvas = new Canvas(Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
 		stage.setTitle("Amazing RPG Simulator 2017");
 		stage.setResizable(false);
 
-		GraphicsContext context = canvas.getGraphicsContext2D();
-		
-		Label label = new Label();
 
-		root.getChildren().add(label);
-		
 
-		systemstate = SystemState.MAIN_MENU;		
-
-		gamethread = new GameThread(context);
-
-		final MainMenu mainmenu = new MainMenu();
 		
-		vb = setUpMainMenuItems(mainmenu);
-		root.getChildren().add(vb);
+		label = new Label();
+
+
+		systemstate = SystemState.MAIN_MENU;	
+		updateGameState(SystemState.MAIN_MENU);
+
+
 		
-		new AnimationTimer(){
+		
+		updateLoop = new AnimationTimer(){
 			private long lastUpdate = 0;
 			private final long[] frameTimes = new long[100];
 		    private int frameTimeIndex = 0 ;
@@ -112,21 +113,24 @@ public class Game extends Application{
 	                label.setFont(Font.font("Vernada",20));
 	                label.toFront();
 	            }
-	            if(systemstate == SystemState.IN_GAME){
-	            	//Game updates
-					gamethread.update();
-					
-					//Draw calls
-					gamethread.draw();
-	            } else if(systemstate == SystemState.MAIN_MENU){
+	            
+	            switch(systemstate){
+	            case IN_GAME:
+	            	gamethread.update();
+	            	gamethread.draw();
+	            	break;
+	            case MAIN_MENU:
 	            	mainmenu.drawBackgroundImage(context);
+	            	break;
+				case LOAD_GAME:
+					break;
+				case SETTINGS:
+					break;
+				default:
+					break;
 	            }
-	          
 		    }
-		    
-		    
-		}.start();
-
+		};
 		
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
 
@@ -140,10 +144,6 @@ public class Game extends Application{
 			
 		});
 		
-
-		
-		
-		
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -151,7 +151,7 @@ public class Game extends Application{
 	public VBox setUpMainMenuItems(MainMenu mainmenu){
 		AudioClip hover = new AudioClip(new File("buttonhover.mp3").toURI().toString());
 
-		Button[] b = mainmenu.generateMenuItems();
+		Button[] b = generateMenuItems();
 		VBox vbbuttons = new VBox();
 		vbbuttons.setMinHeight(Game.SCREEN_HEIGHT*0.80);
 		vbbuttons.setMinWidth(Game.SCREEN_WIDTH);
@@ -186,48 +186,100 @@ public class Game extends Application{
 		
 	}
 	
-	synchronized public static void updateGameState(SystemState state){
+	synchronized public void updateGameState(SystemState state){
+		System.out.println("Changing game states to "+state);
 		switch (state){
 		case IN_GAME:
-			gamethread.start();
+			if(updateLoop != null){
+				System.out.println("stopping update loop");
+				updateLoop.stop();
+			}
 			Platform.runLater(new Runnable(){
-
 				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-
-					root.getChildren().remove(vb);
+				public void run(){
+					root.getChildren().clear();
+					root.getChildren().add(canvas);
+					context = canvas.getGraphicsContext2D();
+					gamethread = new GameThread(context);
+					gamethread.start();
+					scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+				        @Override
+				        public void handle(KeyEvent e) {
+				        	gamethread.handleKeyRelease(e);
+				        }
+				    });
 					
+					scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+				        @Override
+				        public void handle(MouseEvent e) {
+				        	gamethread.handleMouseClick(e);
+				        }
+				    });
 				}
 				
 			});
-			while(!gamethread.isReady()){ //loading screen
+			while(gamethread == null){ //loading screen
 				try {
+					System.out.println("waiting for gamethread to be created");
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-		        @Override
-		        public void handle(KeyEvent e) {
-		        	gamethread.handleKeyRelease(e);
-		        }
-		    });
-			
-			scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
-		        @Override
-		        public void handle(MouseEvent e) {
-		        	gamethread.handleMouseClick(e);
-		        }
-		    });
+			while(!gamethread.isReady()){ //loading screen
+				try {
+					System.out.println("waiting for gamethread to finish loading");
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			systemstate = SystemState.IN_GAME;
-        	System.out.println("system is in game========================================");
+    		updateLoop.start();
+			System.out.println("starting update loop");
 			break;
 		case LOAD_GAME:
 			break;
 		case MAIN_MENU:
+			if(updateLoop!= null){
+				System.out.println("stopping update loop");
+				updateLoop.stop();
+			}
+			if(gamethread!=null){
+				gamethread = null;
+			}
+			scene.setOnKeyReleased(new EventHandler<KeyEvent>(){
+
+				@Override
+				public void handle(KeyEvent e) {
+										
+				}
+				
+			});
+			scene.setOnMouseReleased(new EventHandler<MouseEvent>(){
+
+				@Override
+				public void handle(MouseEvent e) {
+					System.out.println("beep");
+				}
+				
+			});
+			Platform.runLater(new Runnable(){
+				@Override
+				public void run() {
+					root.getChildren().clear();
+					root.getChildren().add(label);
+					root.getChildren().add(canvas);
+					context = canvas.getGraphicsContext2D();
+					mainmenu = new MainMenu();
+					VBox vb = setUpMainMenuItems(mainmenu);
+					root.getChildren().add(vb);
+					systemstate = SystemState.MAIN_MENU;
+					updateLoop.start();
+					System.out.println("starting update loop");
+				}
+				
+			});			
 			break;
 		case SETTINGS:
 			break;
@@ -235,6 +287,91 @@ public class Game extends Application{
 			break;
 
 		}
+	}
+	
+	public Button[] generateMenuItems(){
+		Button[] buttons = new Button[4];
+		buttons[0] = new Button("New Game");
+		buttons[0].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						hasClicked = true;
+						updateGameState(SystemState.IN_GAME);
+						click.play();	
+						// Start new game
+					}
+				}).start();
+			}
+			
+		});
+		buttons[1] = new Button("Load Game");
+		buttons[1].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						updateGameState(SystemState.LOAD_GAME);
+						hasClicked = true;
+						click.play();	
+						// Go to load game screen
+					}
+				}).start();
+			}
+			
+		});
+		buttons[2] = new Button("Settings");
+		buttons[2].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						updateGameState(SystemState.SETTINGS);
+						hasClicked = true;
+						click.play();	
+						// Go to settings screen
+					}
+				}).start();
+			}
+			
+		});
+		buttons[3] = new Button("Exit Game");
+		buttons[3].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						System.exit(0);	
+						// Start new game
+					}
+				}).start();
+			}
+			
+		});
+		return buttons;
+		
 	}
 	
 }
