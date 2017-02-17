@@ -25,6 +25,7 @@ public class TileManager{
 	TileLayer collision = new TileLayer();
 	
 	Image image;
+	Image playerimage;
 	Image tileToDraw;
 	
 	GraphicsContext context;
@@ -52,7 +53,7 @@ public class TileManager{
 	}
 	
 	public void drawPlayer(int x, int y, int up, int left){
-		context.drawImage(image, (player_tile%TILES_PER_LINE_IN_SOURCE)*getTileWidth(), (player_tile/TILES_PER_LINE_IN_SOURCE)*getTileHeight(), getTileWidth(), getTileHeight(), (x-left)*getTileWidth(), (y-up)*getTileHeight(), getTileWidth(), getTileHeight());
+		context.drawImage(playerimage, (x-left)*TILE_WIDTH, (y-up)*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 	}
 	
 	public void drawTrim(int up, int left, int j){
@@ -83,6 +84,7 @@ public class TileManager{
 			image = new Image(file.toURI().toString());
 			TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 			System.out.println("Tiles per line in source is "+TILES_PER_LINE_IN_SOURCE);
+			playerimage = new Image(new File("dragoon armour.png").toURI().toString());
 		} catch(Exception e){
 			e.printStackTrace();
 		}
@@ -195,7 +197,7 @@ public class TileManager{
 			System.out.println("true 1");
 			return true;
 		} else{
-			System.out.println(collision.getMap()[(y*MAP_WIDTH)+x] == -1);
+			System.out.println("all adjacent tiles free " + (collision.getMap()[(y*MAP_WIDTH)+x] == -1));
 			return collision.getMap()[(y*MAP_WIDTH)+x] != -1;
 		}
 	}
