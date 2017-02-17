@@ -7,8 +7,6 @@ public class MapManager extends Thread{
 	private int playerx;
 	private int playery;
 	private String levelName;
-	private int camerayscope;
-	private int cameraxscope;
 	
 	private int camL = 0;
 	private int camR = 40;
@@ -17,16 +15,13 @@ public class MapManager extends Thread{
 	
 	private boolean isReady = false;
 	
+	private boolean useCollision = true;
+	
 	MapLocation currentLocation = MapLocation.TEST_CITY;
 	TileManager tilemanager;
 	
 	public MapManager(GraphicsContext gc){
 		tilemanager = new TileManager(gc);
-		playerx = 21;
-		playery = 10;
-		cameraxscope = 40;
-		camerayscope = 21;
-
 	}
 	
 	synchronized public boolean isReady(){
@@ -35,7 +30,29 @@ public class MapManager extends Thread{
 	
 	public void run(){
 		loadCity();
-
+		playerx = tilemanager.getInitialSpawnX();
+		playery = tilemanager.getInitialSpawnY();
+		if(playerx<tilemanager.getTilesPerRow()/2){ // hitting left boundary
+			camL = 0;
+			camR = tilemanager.getTilesPerRow();
+		} else if (playerx+(tilemanager.getTilesPerRow()/2) > tilemanager.getMapWidth()){ // hitting right boundary
+			camR = tilemanager.getMapWidth();
+			camL = camR - tilemanager.getTilesPerRow();	
+		} else { //hitting neither
+			camL = playerx - tilemanager.getTilesPerRow()/2;
+			camR = (playerx + tilemanager.getTilesPerRow()/2)-1;
+		}
+		if(playery<tilemanager.getTilesPerColumn()/2){ // hitting up boundary
+			camU = 0;
+			camD = tilemanager.getTilesPerColumn();
+		} else if (playery+(tilemanager.getTilesPerColumn()/2) > tilemanager.getMapHeight()){ // hitting bottom boundary
+			camD = tilemanager.getMapHeight();
+			camU = camR - tilemanager.getTilesPerColumn();	
+		} else { //hitting neither
+			camU = playerx - tilemanager.getTilesPerColumn()/2;
+			camD = (playerx + tilemanager.getTilesPerColumn()/2)-1;
+		}
+		
 		isReady = true;
 		draw();
 	}
@@ -58,82 +75,63 @@ public class MapManager extends Thread{
 	
 	public void draw(){
 		tilemanager.drawAllLayersTrim(camU,camL);
-		tilemanager.drawPlayer(playerx,playery,camU,camL);
+		tilemanager.drawPlayer(playerx,playery,camU, camL);
 	}
 	
 	public void moveDown(){
-		playery++;
-		if(playerx>tilemanager.getMapHeight()){
-			playerx = tilemanager.getMapHeight();
-		}
-		if(playery-camU<(Game.SCREEN_HEIGHT/2)/tilemanager.getTileHeight()){
-			System.out.println("player not centered, not moving cam");
-			return;
-		}
-		if(camD==tilemanager.getMapHeight()){
-			System.out.println("collision on down");
-			return;
-		} else {
-			System.out.println("no collision on down, moving camera");
-			camU++;
-			camD++;
+		if(useCollision){
+			if(!tilemanager.checkCollision(playerx, playery+1)){
+				if(camD!=tilemanager.getMapHeight() && playery>(camD+camU)/2){
+					camD++;
+					camU++;
+				}
+				if(playery<camD-1){
+					playery++;
+				}
+			}
 		}
 	}
 	
 	public void moveUp(){
-		playery--;
-		if(playery<0){
-			playery=0;
+		if(useCollision){
+			if(!tilemanager.checkCollision(playerx, playery-1)){
+				if(camU!=0 && playery<(camU+camD)/2){
+					camU--;
+					camD--;
+				}
+				if(playery>0){
+					playery--;
+				}
+			}
 		}
-		if(camD-playery>(Game.SCREEN_HEIGHT/2)/tilemanager.getTileHeight()){
-			System.out.println("player not centered, not moving cam");
-			return;
-		}
-		if(camU==0){
-			System.out.println("collision on up");
-			return;
-		} else {
-			System.out.println("no collision on right, moving camera");
-			camU--;
-			camD--;
-		}
+		
 	}
 	
 	public void moveLeft(){
-		playerx--;
-		if(playerx<0){
-			playerx = 0;
-		}
-		if(camR-playerx>(Game.SCREEN_WIDTH/2)/tilemanager.getTileWidth()){
-			System.out.println("player not centered, not moving cam");
-			return;
-		}
-		if(camL==0){
-			System.out.println("collision on left");
-			return;
-		} else {
-			System.out.println("no collision on left, moving camera");
-			camR--;
-			camL--;
+		if(useCollision){
+			if(!tilemanager.checkCollision(playerx-1, playery)){
+				if(camL!=0 && playerx<(camR+camL)/2){
+					camL--;
+					camR--;
+				}
+				if(playerx>0){
+					playerx--;
+				}
+			}
 		}
 	}
 	
 	public void moveRight(){
-		playerx++;
-		if(playerx>tilemanager.getMapWidth()){
-			playerx = tilemanager.getMapWidth();
-		}
-		if(playerx-camL<Game.SCREEN_WIDTH/(2*tilemanager.getTileWidth())){
-			System.out.println("player not centered, not moving cam");
-			return;
-		}
-		if(camR==tilemanager.getMapWidth()){
-			System.out.println("collision on right");
-			return;
-		} else {
-			System.out.println("no collision on right, moving camera");
-			camR++;
-			camL++;
+		if(useCollision){
+			if(!tilemanager.checkCollision(playerx, playery+1)){
+				if(camR!=tilemanager.getMapWidth() && playerx>(camR+camL)/2){
+					camL++;
+					camR++;
+				}
+				if(playerx<camR-1){
+					playerx++;
+				}
+			}
 		}
 	}
 	
@@ -154,6 +152,19 @@ public class MapManager extends Thread{
 		case D:
 			moveRight();
 			// some other action 
+			break;
+		case F:
+			System.out.println("camL :"+camL);
+
+			System.out.println("camR :"+camR);
+
+			System.out.println("camU :"+camU);
+
+			System.out.println("camD :"+camD);
+
+			System.out.println("playerx :"+playerx);
+
+			System.out.println("playery :"+playery);
 			break;
 		default:
 			break;	

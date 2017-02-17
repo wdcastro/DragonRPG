@@ -11,14 +11,18 @@ public class TileManager{
 	private int TILE_WIDTH = 32;
 	private int TILE_HEIGHT = 32;
 	private int TILES_PER_LINE_IN_SOURCE = 16;
-	private int SCREEN_MAX_TILES_WIDTH = 40;
+	private int TILES_PER_ROW_ON_SCREEN = 40;
+	private int TILES_PER_COLUMN_ON_SCREEN = 21;
+	
+	private int spawnx = 0;
+	private int spawny = 0;
 	
 	private int player_tile = -1;
 	
 	String imgsrc;
-	TileLayer layer1 = new TileLayer();
-	TileLayer layer2 = new TileLayer();
-	TileLayer layer3 = new TileLayer();
+	TileLayer background = new TileLayer();
+	TileLayer objects = new TileLayer();
+	TileLayer collision = new TileLayer();
 	
 	Image image;
 	Image tileToDraw;
@@ -42,41 +46,6 @@ public class TileManager{
 		return MAP_HEIGHT;
 	}
 	
-	public void draw(){
-		//drawLayer(1);
-		//drawLayer(2, 0, (Game.SCREEN_WIDTH/TILE_WIDTH) * (Game.SCREEN_HEIGHT/TILE_HEIGHT));
-	}
-	
-	/*
-	public void drawLayer(int j){
-		int[] layer;
-		if(j == 1){
-			layer = layer1.getMap();
-		} else {
-			layer = layer2.getMap();
-		}
-
-		//System.out.println("TileManager:drawLayer: Is layer"+j+" null? "+(layer.length ==0));
-		int currentHeight = 0;
-		int currentWidth = 0;	
-		
-		for(int i = 0; i< layer.length; i++){ //16 is the number of tiles per line in tileset
-			if(layer[i] != -1){
-				context.drawImage(image, (layer[i]%TILES_PER_LINE_IN_SOURCE)*TILE_WIDTH, (layer[i]/TILES_PER_LINE_IN_SOURCE)*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, currentWidth*TILE_WIDTH, currentHeight*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-			}
-			
-			currentWidth++;
-			if(currentWidth%MAP_WIDTH == 0 && i!= 0){
-				//System.out.println("increasing height i is: "+ i);
-				currentWidth = 0;
-				currentHeight++;
-				//System.out.println("new currentHeight is " + currentHeight);
-			}
-			
-		}
-	}
-	*/
-	
 	public void drawAllLayersTrim(int up, int left){
 		drawTrim(up, left, 1);
 		drawTrim(up, left, 2);
@@ -87,21 +56,16 @@ public class TileManager{
 	}
 	
 	public void drawTrim(int up, int left, int j){
-		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/getTileWidth();
-		int numRowsDownToDraw = Game.SCREEN_HEIGHT/getTileHeight();
+		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/getTileWidth(); // need to modify these with the number of tiles wide/high so that they dont loop and draw
+		int numRowsDownToDraw = Game.SCREEN_HEIGHT/getTileHeight(); // if ( screen width - player x  > tiles to render/2) stop rendering, stop panning camera
 		int firstTile = (MAP_WIDTH*up)+left;
-		//System.out.println("firstTile is "+firstTile);
-		
 		
 		int[] layer;
 		if(j == 1){
-			layer = layer1.getMap();
+			layer = background.getMap();
 		} else {
-			layer = layer2.getMap();
+			layer = objects.getMap();
 		}
-		
-		
-		//System.out.println(layer[0]);
 		
 		for(int currentRow = 0; currentRow < numRowsDownToDraw; currentRow++){
 			for(int currentTileInRow = 0; currentTileInRow < numTilesAcrossToDraw; currentTileInRow++){
@@ -130,6 +94,7 @@ public class TileManager{
 		TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 		loadTileLayer(mapname+"_Tile Layer 1.csv", 1);
 		loadTileLayer(mapname+"_Tile Layer 2.csv", 2);
+		loadTileLayer(mapname+"_Tile Layer 2.csv", 3);
 	}
 	
 	public void loadMapInfo(String path){
@@ -163,6 +128,14 @@ public class TileManager{
 					setTileHeight(Integer.parseInt(info[i]));
 					System.out.println("TILE_HEIGHT is "+getTileHeight());
 					break;
+				case "spawnx":
+					i++;
+					spawnx = Integer.parseInt(info[i]);
+					break;
+				case "spawny":
+					i++;
+					spawny = Integer.parseInt(info[i]);
+					break;
 				case "source":
 					i++;
 					imgsrc = info[i];
@@ -171,6 +144,9 @@ public class TileManager{
 					
 				}
 			}
+			
+			TILES_PER_ROW_ON_SCREEN = Game.SCREEN_WIDTH/TILE_WIDTH;
+			TILES_PER_COLUMN_ON_SCREEN = Game.SCREEN_HEIGHT/TILE_HEIGHT;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -191,13 +167,18 @@ public class TileManager{
 			
 			switch(layerNumber){
 			case 1:
-				layer1.loadInto(tilestrarray);
+				background.loadInto(tilestrarray);
 				break;
 			case 2:
-				layer2.loadInto(tilestrarray);
+				objects.loadInto(tilestrarray);
 				break;
 			case 3:
-				layer3.loadInto(tilestrarray);
+				collision.loadInto(tilestrarray);
+				int[] map = collision.getMap();
+				for(int i = 0; i<map.length; i++){
+					System.out.print(map[i]);
+					System.out.print(", ");
+				}
 				break;
 			default:
 				System.err.println("Invalid Tile Layer int");
@@ -207,15 +188,25 @@ public class TileManager{
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean checkCollision(int x, int y){
+		System.out.println(x+" "+y);
+		if(x==-1 || y==-1 || x> MAP_WIDTH || y>MAP_HEIGHT){
+			System.out.println("true 1");
+			return true;
+		} else{
+			System.out.println(collision.getMap()[(y*MAP_WIDTH)+x] == -1);
+			return collision.getMap()[(y*MAP_WIDTH)+x] != -1;
+		}
+	}
 
 
 	public int getTileHeight() {
 		return TILE_HEIGHT;
 	}
 
-
-	public void setTileHeight(int tILE_HEIGHT) {
-		TILE_HEIGHT = tILE_HEIGHT;
+	public void setTileHeight(int height) {
+		TILE_HEIGHT = height;
 	}
 
 
@@ -224,10 +215,24 @@ public class TileManager{
 	}
 
 
-	public void setTileWidth(int tILE_WIDTH) {
-		TILE_WIDTH = tILE_WIDTH;
+	public void setTileWidth(int width) {
+		TILE_WIDTH = width;
 	}
 	
+	public int getTilesPerRow(){
+		return TILES_PER_ROW_ON_SCREEN;
+	}
 	
+	public int getTilesPerColumn(){
+		return TILES_PER_COLUMN_ON_SCREEN;
+	}
+	
+	public int getInitialSpawnX(){
+		return spawnx;
+	}
+	
+	public int getInitialSpawnY(){
+		return spawny;
+	}
 
 }

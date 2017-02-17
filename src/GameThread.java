@@ -15,7 +15,7 @@ public class GameThread extends Thread{
 	PlaylistManager playlistmanager;
 
 	
-	private boolean isRunning = false;
+	//private boolean isRunning = false;
 	private boolean isReady = false;
 
 	
@@ -24,7 +24,7 @@ public class GameThread extends Thread{
 	}
 	
 	public void run(){
-		isRunning = true;
+		//isRunning = true;
 		playlistmanager = new PlaylistManager();
 		spellmanager = new SpellManager();
 		battlemanager = new BattleManager();
@@ -135,6 +135,6 @@ public class GameThread extends Thread{
 	public void stopAllThreads(){
 		System.out.println("Stopping all threads");
 		playlistmanager.stopMusic();		
-		isRunning = false;		
+		//isRunning = false;		
 	}
 }
