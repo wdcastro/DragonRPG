@@ -17,11 +17,10 @@ public class TileManager{
 	private int spawnx = 0;
 	private int spawny = 0;
 	
-	private int player_tile = -1;
-	
 	String imgsrc;
 	TileLayer background = new TileLayer();
 	TileLayer objects = new TileLayer();
+	Interactable[] interactablelayer;
 	TileLayer collision = new TileLayer();
 	
 	Image image;
@@ -30,8 +29,8 @@ public class TileManager{
 	
 	GraphicsContext context;
 	
-	public TileManager(GraphicsContext gc){
-		context = gc;	
+	public TileManager(GameThread gamethread){
+		context = gamethread.getContext();	
 	}
 
 	
@@ -84,7 +83,7 @@ public class TileManager{
 			image = new Image(file.toURI().toString());
 			TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 			System.out.println("Tiles per line in source is "+TILES_PER_LINE_IN_SOURCE);
-			playerimage = new Image(new File("dragoon armour.png").toURI().toString());
+			playerimage = new Image(new File("dragoon chibi.png").toURI().toString());
 		} catch(Exception e){
 			e.printStackTrace();
 		}
@@ -173,6 +172,14 @@ public class TileManager{
 				break;
 			case 2:
 				objects.loadInto(tilestrarray);
+				int[] objmap = objects.getMap();
+				interactablelayer = new Interactable[objmap.length];
+				for(int i = 0; i<objmap.length; i++){
+					if(objmap[i]!=-1){
+						interactablelayer[i] = new testInteractable();
+						System.out.println("interactable added at " + i);
+					}
+				}
 				break;
 			case 3:
 				collision.loadInto(tilestrarray);
@@ -235,6 +242,10 @@ public class TileManager{
 	
 	public int getInitialSpawnY(){
 		return spawny;
+	}
+	
+	public Interactable[] getInteractables(){
+		return interactablelayer;
 	}
 
 }

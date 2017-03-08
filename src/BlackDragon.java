@@ -1,14 +1,13 @@
 
 public class BlackDragon extends Character{
 
-	public BlackDragon(String name, int baseLevel, int classLevel, int HP,
+	public BlackDragon(String name, int level, int HP,
 			int mana, int maxHP, int maxMana, int ATK, int DEF,
 			int MGC_ATK, int MGC_DEF, int MGC_HEAL) {
 		
 		// Load stats
 		this.name = name;
-		this.baseLevel = baseLevel;
-		this.classLevel = classLevel;
+		this.level = level;
 		this.HP = HP;
 		this.mana = mana;
 		this.maxHP = maxHP;
@@ -21,6 +20,9 @@ public class BlackDragon extends Character{
 		
 		// Load spells
 		mainSpells[0] = "Black Fire";
+		mainSpells[1] = "Wrath of Darkness";
+		mainSpells[2] = "Destructive Blaze";
+		mainSpells[3] = "Mega Ultra Death Strike of the Extreme Phoenix Dragon God";
 		equipment[0] = new Equipment("Normal Sword", "Cut", "Slash", "Stab", "Mega Ultra Death Strike of the Extreme Phoenix Dragon God");
 	}
 	

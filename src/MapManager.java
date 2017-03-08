@@ -1,5 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 
 public class MapManager extends Thread{
@@ -7,6 +9,7 @@ public class MapManager extends Thread{
 	private int playerx;
 	private int playery;
 	private String levelName;
+	GameThread gt;
 	
 	private int camL = 0;
 	private int camR = 40;
@@ -14,14 +17,14 @@ public class MapManager extends Thread{
 	private int camD = 21;
 	
 	private boolean isReady = false;
-	
-	private boolean useCollision = true;
-	
+
 	MapLocation currentLocation = MapLocation.TEST_CITY;
 	TileManager tilemanager;
 	
-	public MapManager(GraphicsContext gc){
-		tilemanager = new TileManager(gc);
+	public MapManager(GameThread gamethread){
+		gt = gamethread;
+		tilemanager = new TileManager(gamethread);
+
 	}
 	
 	synchronized public boolean isReady(){
@@ -30,6 +33,7 @@ public class MapManager extends Thread{
 	
 	public void run(){
 		loadCity();
+
 		playerx = tilemanager.getInitialSpawnX();
 		playery = tilemanager.getInitialSpawnY();
 		if(playerx<tilemanager.getTilesPerRow()/2){ // hitting left boundary
@@ -54,7 +58,8 @@ public class MapManager extends Thread{
 		}
 		
 		isReady = true;
-		draw();
+
+		//draw();
 	}
 
 	public void loadCity(){
@@ -79,7 +84,6 @@ public class MapManager extends Thread{
 	}
 	
 	public void moveDown(){
-		if(useCollision){
 			if(!tilemanager.checkCollision(playerx, playery+1)){
 				if(camD!=tilemanager.getMapHeight() && playery>(camD+camU)/2){
 					camD++;
@@ -89,11 +93,9 @@ public class MapManager extends Thread{
 					playery++;
 				}
 			}
-		}
 	}
 	
 	public void moveUp(){
-		if(useCollision){
 			if(!tilemanager.checkCollision(playerx, playery-1)){
 				if(camU!=0 && playery<(camU+camD)/2){
 					camU--;
@@ -103,12 +105,10 @@ public class MapManager extends Thread{
 					playery--;
 				}
 			}
-		}
 		
 	}
 	
 	public void moveLeft(){
-		if(useCollision){
 			if(!tilemanager.checkCollision(playerx-1, playery)){
 				if(camL!=0 && playerx<(camR+camL)/2){
 					camL--;
@@ -118,11 +118,9 @@ public class MapManager extends Thread{
 					playerx--;
 				}
 			}
-		}
 	}
 	
 	public void moveRight(){
-		if(useCollision){
 			if(!tilemanager.checkCollision(playerx+1, playery)){
 				if(camR!=tilemanager.getMapWidth() && playerx>(camR+camL)/2){
 					camL++;
@@ -132,45 +130,76 @@ public class MapManager extends Thread{
 					playerx++;
 				}
 			}
-		}
 	}
 	
-	public void doKeyboardAction(KeyEvent e){ // will have to do boolean isAnimating and isKeyDown to constantly update char while held
-		switch (e.getCode()){
-		case W:
-			// some other action
-			moveUp();
-			break;
-		case A:
-			// some other action 
-			moveLeft();
-			break;	
-		case S:
-			moveDown();
-			// some other action 
-			break;	
-		case D:
-			moveRight();
-			// some other action 
-			break;
-		case F:
-			System.out.println("camL :"+camL);
+	public void handleKeyRelease(KeyEvent e){ // will have to do boolean isAnimating and isKeyDown to constantly update char while held
+			switch (e.getCode()){
+			case W:
+				moveUp();
+				break;
+			case A:
+				// some other action 
+				moveLeft();
+				break;	
+			case S:
+				moveDown();
+				// some other action 
+				break;	
+			case D:
+				moveRight();
+				// some other action 
+				break;
+			case F:
+				System.out.println("camL :"+camL);
 
-			System.out.println("camR :"+camR);
+				System.out.println("camR :"+camR);
 
-			System.out.println("camU :"+camU);
+				System.out.println("camU :"+camU);
 
-			System.out.println("camD :"+camD);
+				System.out.println("camD :"+camD);
 
-			System.out.println("playerx :"+playerx);
+				System.out.println("playerx :"+playerx);
 
-			System.out.println("playery :"+playery);
-			break;
-		default:
-			break;	
-		}
+				System.out.println("playery :"+playery);
+				break;
+			default:
+				break;
+			}
 		draw();
 	}
+
+	public void handleMouseClick(MouseEvent e) {
+		if (e.getButton() == MouseButton.PRIMARY){
+			
+			// 0 - tile width; x is 0; tile width - tilewidth * 2; x is 1; tile width*2 - tilewidth *3; x is 2;
+			double mousex = e.getX();
+			double mousey = e.getY();
+			double tilex = Math.floor(mousex/tilemanager.getTileWidth());
+			double tiley = Math.floor(mousey/tilemanager.getTileHeight());
+			//use this to access array location
+			System.out.println("("+tilex+","+tiley+")");
+			if ((camU + tiley) == playery && (camL+tilex)==playerx){
+				System.out.println("this is me");
+				gt.showDialogBox("This is me");
+			} else {
+				int arraynumber = (int) (((camU + tiley) * tilemanager.getMapWidth()) + (camL+tilex));
+				System.out.println("arraynumber to access is: "+arraynumber);
+				Interactable item = tilemanager.getInteractables()[arraynumber];
+				
+				if (item != null){
+					gt.showDialogBox(item.getInteractText());
+				} else {
+					System.out.println("item is null");
+				}
+			}
+			
+		}
+		else if (e.getButton() == MouseButton.SECONDARY){
+			
+		}
+		
+	}
+
 	
 
 }

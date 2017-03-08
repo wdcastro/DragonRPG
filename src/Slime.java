@@ -24,8 +24,7 @@ public class Slime extends Character {
 	
 	public Slime(){
 		name = "Slime";
-		baseLevel = 1;
-		classLevel = 1;
+		level = 1;
 		HP = 10;
 		mana = 0;
 		maxHP = 10;

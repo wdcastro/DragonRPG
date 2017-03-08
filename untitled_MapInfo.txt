@@ -1,1 +1,1 @@
-width 80 height 80 tilewidth 32 tileheight 32 spawnx 0 spawny 0 source untitled.png
+width 80 height 80 tilewidth 64 tileheight 64 spawnx 0 spawny 0 source untitled.png

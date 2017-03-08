@@ -32,8 +32,8 @@ public class Game extends Application{
 	//public static final int MAX_DRAWS = 60;
 	//public static final int MILLIS_BETWEEN_DRAWS = 1000/MAX_DRAWS;
 	
-	public static final int SCREEN_WIDTH = 1920;
-	public static final int SCREEN_HEIGHT = 1080;
+	public static final int SCREEN_WIDTH = 1280;
+	public static final int SCREEN_HEIGHT = 720;
 	
 	public static final long MILLIS_TO_NANOS = 1000000;
 	
@@ -66,7 +66,7 @@ public class Game extends Application{
 		// set up graphics groups
 		
 		root = new Group();
-		scene = new Scene(root,Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT, Color.BLACK);		
+		scene = new Scene(root,Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, Color.BLACK);		
 		canvas = new Canvas(Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
 		stage.setTitle("Amazing RPG Simulator 2017");
 		stage.setResizable(false);
@@ -158,9 +158,6 @@ public class Game extends Application{
 		vbbuttons.setSpacing(10);
 
 		for(int i = 0; i<b.length;i++){
-			
-			b[i].setLayoutX(250);
-			b[i].setLayoutY(250*i);
 			b[i].setMaxWidth(Game.SCREEN_WIDTH*0.20);
 			b[i].setOnMouseEntered(new EventHandler<MouseEvent>(){
 
@@ -200,7 +197,7 @@ public class Game extends Application{
 					root.getChildren().clear();
 					root.getChildren().add(canvas);
 					context = canvas.getGraphicsContext2D();
-					gamethread = new GameThread(context);
+					gamethread = new GameThread(context, root);
 					gamethread.start();
 					scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 				        @Override

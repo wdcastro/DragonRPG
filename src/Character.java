@@ -2,8 +2,7 @@ abstract public class Character {
 	// maybe abstract class, make hero obj, enemy obj etc
 
 	String name;
-	protected int baseLevel;
-	protected int classLevel;
+	protected int level;
 	protected int HP;
 	protected int mana;
 	protected int maxHP;

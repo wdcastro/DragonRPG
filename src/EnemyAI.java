@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 
 public class EnemyAI extends Thread {
 	
@@ -9,13 +7,20 @@ public class EnemyAI extends Thread {
 	long attackTimer = 0;
 	final int attackCooldown = 5;
 	
-	public EnemyAI(ArrayList<Character> party, Character me){
-		attackTarget = party.get(1);
+	public EnemyAI(Character[] party, Character me){
+		//TO-DO: make ai smarter and more fleshed out attack patterns
+		for(int i = 0; i<party.length; i++){
+			if(party[i] != null){
+				attackTarget = party[i];
+				break;
+			}
+		}
 		this.me = me;
 	}
 	
 	public void attack(Character target){
-		System.out.println(me.getName() + " attacks " + target.getName());
+		System.out.println(me.getName() + " attacks " + target.getName() + " with "+ me.getSpells()[(int) Math.round(Math.random()*3)]);
+		 // instead of 3 it should be number of moves -1
 		target.getAttacked(me, me.getSpells()[0], 100);
 		attackTimer = 0;
 	}	

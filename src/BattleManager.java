@@ -5,12 +5,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class BattleManager {
+public class BattleManager{
 // controls characters, status effects, damage, hp, etc
 	EnemyAI enemyai;
 	ArrayList<String> spellqueue;
 	MoveSelectScreen moveselect;
 	PartyManager partymanager;
+	InBattleGraphics inbattlegraphics;
+	
 	int currentChar;
 	int shieldedChar = 0;
 	int partysize;
@@ -21,6 +23,7 @@ public class BattleManager {
 	final long finalShieldCooldown = 5000 * Game.MILLIS_TO_NANOS;
 	long currentShieldDuration = 750 * Game.MILLIS_TO_NANOS;
 	long currentShieldCooldown = 5000 * Game.MILLIS_TO_NANOS;
+
 	
 	/*
 	 * BATTLE_READY
@@ -28,13 +31,13 @@ public class BattleManager {
 	 * ENEMY_TURN
 	 * FIGHT_OVER
 	 */
+	
 	BattleState currentState = BattleState.BATTLE_READY;
 	
-	public BattleManager(){
-		partymanager = new PartyManager();
+	public BattleManager(PartyManager pm, GameThread gamethread){
+		partymanager = pm;
 		enemyai = new EnemyAI(partymanager.getParty(), new Slime());
-		moveselect = new MoveSelectScreen(partymanager.getParty());
-		startFight();
+		moveselect = new MoveSelectScreen(partymanager.getParty(), gamethread);
 	}
 	
 	public void doKeyboardAction(KeyEvent e){
@@ -91,11 +94,13 @@ public class BattleManager {
 					System.out.println("Cannot switch char, size too small");
 				}
 				break;
+			default:
+				break;
 			}
 		}
 	}
 	
-	public void doMouseAction(MouseEvent e){
+	public void handleMouseClick(MouseEvent e){
 		if(currentState == BattleState.MOVE_SELECT){
 			moveselect.handleMouseClick(e);
 			if(moveselect.isPicking == false){
@@ -115,7 +120,7 @@ public class BattleManager {
 				if(currentShieldCooldown >= finalShieldCooldown){
 					System.out.println("Activating shield");
 					shieldedChar = currentChar;
-					partymanager.getParty().get(currentChar).setShield(true);
+					partymanager.getParty()[currentChar].setShield(true);
 					currentShieldCooldown = 0;
 					currentShieldDuration = 0;
 				} else {
@@ -131,8 +136,9 @@ public class BattleManager {
 		System.out.println("Battle Starting");
 		System.out.println("Move Select screen displays");
 		currentChar = 0;
-		partysize = partymanager.getParty().size();
+		partysize = partymanager.getParty().length;
 		currentState = BattleState.MOVE_SELECT;
+		moveselect.startPick();
 		enemyai.start();
 	}
 
@@ -152,12 +158,12 @@ public class BattleManager {
 		if(currentShieldCooldown < finalShieldCooldown){
 			currentShieldCooldown += Game.delta_time;
 			
-			if(partymanager.getParty().get(shieldedChar).isShielded){
+			if(partymanager.getParty()[shieldedChar].isShielded){
 				if(currentShieldDuration < finalShieldDuration){
 					currentShieldDuration += Game.delta_time;
 				} else {
 					System.out.println("Shield turned off.");
-					partymanager.getParty().get(shieldedChar).setShield(false);
+					partymanager.getParty()[shieldedChar].setShield(false);
 				}
 			}
 			
@@ -165,4 +171,17 @@ public class BattleManager {
 		}
 	}
 	
+	public long getPickTimerDelay(){
+
+		//System.out.println("testingPickTimerDelay: "+testingPickTimerDelay);
+		return testingPickTimerDelay;
+		
+	}
+	
+	synchronized public long getCurrentPickTimer(){
+		//System.out.println("nextPickTimer: "+nextPickTimer);
+		return nextPickTimer;
+		
+	}
+
 }
