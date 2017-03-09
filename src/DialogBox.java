@@ -11,10 +11,12 @@ public class DialogBox extends Thread{
 	int index = 0;
 	VBox vbox;
 	GameThread gt;
+	String s = "";
 	float timer = 0;
 	float timePerChar = 50;
 	boolean isShowing = false;
 	boolean isReady = false;
+	boolean isTyping = false;
 	
 	public DialogBox(GameThread gamethread){
 		gt = gamethread;
@@ -45,6 +47,7 @@ public class DialogBox extends Thread{
 	
 	public void show(){
 		timer = 0;
+		isTyping = true;
 		Platform.runLater(new Runnable(){
 			public void run(){
 				isShowing = true;
@@ -69,14 +72,27 @@ public class DialogBox extends Thread{
 	}
 	
 	public void update(){
+		if(isTyping){
 		timer += Game.delta_time/Game.MILLIS_TO_NANOS;
+		}
+
 		//System.out.println(timer);
 		if(index <= text.length() && timer >= timePerChar){
-
-			label.setText(text.substring(0, index));
+			s = text.substring(0, index);
+			label.setText(s);
 			index++;
 			timer = 0;
 		}
+		
+		if(index > text.length()){
+			isTyping = false;
+		}
+	}
+	
+	public void skip(){
+		label.setText(text);
+		index = text.length();
+		isTyping = false;
 	}
 
 	public boolean isReady() {
@@ -86,6 +102,12 @@ public class DialogBox extends Thread{
 	public boolean isShowing(){
 		return isShowing;
 	}
+	
+	public boolean isTyping(){
+		return isTyping;
+	}
+	
+	
 	
 	
 }

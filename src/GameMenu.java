@@ -1,8 +1,14 @@
 import java.io.File;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 
 
 
@@ -17,10 +23,29 @@ public class GameMenu {
 	private GameThread gamethread;
 	String[] itemList = {"Party", "Item", "Craft", "Quest", "Map", "Save", "Menu", "Close"};
 	
+	VBox vbox;
+	
 	public GameMenu(GameThread gamethread){
 		this.gamethread = gamethread;
 		context = gamethread.getContext();
 		image = new Image(new File("menu.png").toURI().toString());
+		vbox = new VBox();
+		vbox.setMinHeight(Game.SCREEN_HEIGHT);
+		vbox.setMinWidth(Game.SCREEN_WIDTH*0.20);
+		vbox.setSpacing(Game.SCREEN_HEIGHT/12);
+		vbox.setLayoutX(0);
+		vbox.setLayoutY(0);
+		vbox.setStyle(//"-fx-padding: 10;" + 
+                "-fx-border-style: solid inside;" + 
+                "-fx-border-width: 2;" +
+                "-fx-border-insets: 5;" + 
+                "-fx-border-radius: 5;" + 
+                "-fx-border-color: blue;");
+		Button[] buttons = generateMenuItems();
+		for(int i = 0; i < buttons.length; i++){
+			buttons[i].setMaxWidth(vbox.getMinWidth());
+			vbox.getChildren().add(buttons[i]);
+		}
 		
 	}
 
@@ -28,17 +53,200 @@ public class GameMenu {
 		context.drawImage(image, 0, 0, Game.SCREEN_WIDTH*0.25, Game.SCREEN_HEIGHT);
 	}
 	
+	public Button[] generateMenuItems(){
+		Button[] buttons = new Button[8];
+		buttons[0] = new Button("Party");
+		buttons[0].setOnMouseClicked(new EventHandler<MouseEvent>(){
 
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						
+						currentlySelected = 0;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[1] = new Button("Items");
+		buttons[1].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 1;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[2] = new Button("Craft");
+		buttons[2].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 2;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[3] = new Button("Quest");
+		buttons[3].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 3;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[4] = new Button("Map");
+		buttons[4].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 4;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[5] = new Button("Save game");
+		buttons[5].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 5;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[6] = new Button("Title screen");
+		buttons[6].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 6;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		buttons[7] = new Button("Close menu");
+		buttons[7].setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				new Thread(new Runnable(){
+
+					
+					@Override
+					public void run() {
+						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+
+						currentlySelected = 7;
+						enterNextMenu();
+						click.play();	
+					}
+				}).start();
+			}
+			
+		});
+		return buttons;
+		
+	}
 	
 	public void show(){
 		isShowing = true;
 		draw();
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				gamethread.getRootNode().getChildren().add(vbox);
+				
+			}
+			
+		});
 		System.out.println("Showing menu? :" + isShowing);
 		
 	}
 	
 	public void hide(){
 		isShowing = false;
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				gamethread.getRootNode().getChildren().remove(vbox);
+				
+			}
+			
+		});
 		System.out.println("Showing menu? :" + isShowing);
 	}
 	

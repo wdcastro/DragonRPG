@@ -103,6 +103,7 @@ public class GameThread extends Thread{
 		case WORLD_MAP:
 			break;
 		case IN_MENU:
+			mapmanager.draw();
 			gamemenu.draw();
 			break;
 		default:
@@ -148,7 +149,11 @@ public class GameThread extends Thread{
 	
 	public void handleMouseClick(MouseEvent e){
 		if(dialogbox.isShowing()){
-			dialogbox.hide();
+			if(dialogbox.isTyping){
+				dialogbox.skip();
+			} else {
+				dialogbox.hide();
+			}
 		} else {
 			switch(gameState){
 			case IN_BATTLE:
