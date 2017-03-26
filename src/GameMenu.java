@@ -44,6 +44,12 @@ public class GameMenu {
 		Button[] buttons = generateMenuItems();
 		for(int i = 0; i < buttons.length; i++){
 			buttons[i].setMaxWidth(vbox.getMinWidth());
+			buttons[i].setStyle(" -fx-border-color: transparent;" +
+    "-fx-border-width: 0;" +
+    "-fx-background-radius: 0;" +
+    "-fx-background-color: transparent;" +
+    "-fx-font-size: 20px;" + /* 12 */
+    "-fx-text-fill: #828282;");
 			vbox.getChildren().add(buttons[i]);
 		}
 		
@@ -65,7 +71,6 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-
 						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
 						
 						currentlySelected = 0;

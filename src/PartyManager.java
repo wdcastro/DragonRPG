@@ -20,6 +20,8 @@ public class PartyManager {
 		image = new Image(new File("karate guy.png").toURI().toString());
 		party[2] = black;
 		party[1] = white;
+		party[0] = black;
+		party[3] = white;
 	}
 	
 	public void addToParty(Character character, int position){		

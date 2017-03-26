@@ -18,7 +18,6 @@ public class GameThread extends Thread{
 	MapManager mapmanager;
 	PartyManager partymanager;
 	PlaylistManager playlistmanager;
-	InBattleGraphics ibg;
 	DialogBox dialogbox;
 	HUD hud;
 	
@@ -93,7 +92,7 @@ public class GameThread extends Thread{
 		context.fillRect(0,0,Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT);
 		switch (gameState){
 		case IN_BATTLE:
-			ibg.draw();
+			battlemanager.draw();
 			hud.draw();
 			break;
 		case IN_CITY:
@@ -126,11 +125,9 @@ public class GameThread extends Thread{
 				break;
 			case IN_CITY:
 				if(e.getCode().toString()=="ENTER"){
-					System.out.println("registering enter");
 					setGameState(GameState.IN_MENU);
 				}
 				if(e.getCode().toString()=="P"){
-					System.out.println("registering enter");
 					setGameState(GameState.IN_BATTLE);
 				}
 				mapmanager.handleKeyRelease(e);
@@ -190,7 +187,6 @@ public class GameThread extends Thread{
 			gamemenu.show();
 			break;
 		case IN_BATTLE:
-			ibg = new InBattleGraphics(this);
 			hud = new HUD(this, battlemanager.getPickTimerDelay());
 			battlemanager.startFight();
 			break;

@@ -42,7 +42,7 @@ public class DialogBox extends Thread{
         label.toFront();
         vbox.getChildren().add(label);
 		isReady = true;
-		show();
+		//show();
 	}
 	
 	public void show(){

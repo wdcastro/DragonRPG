@@ -1,9 +1,12 @@
+import java.io.File;
 import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -15,38 +18,32 @@ public class MoveSelectScreen {
 	 * TODO: limit party size casters
 	 */
 	
-	ArrayList<String> spellqueue;
-	//ArrayList<Character> casterqueue = new ArrayList<Character>();
+	String[] spellqueue;
 	
-	int[] spellintegers;
 	Character[] currentparty;
 	GameThread gamethread;
 	
-	int currentCaster;
+	int currentCaster = -1;
+	int firstCaster = -1;
 	int numCasters;
 	boolean isPicking;
 	
+	Image image;
+	
+	Button spell0;
 	Button spell1;
 	Button spell2;
 	Button spell3;
-	Button spell4;
 	
 	VBox vbox;
 
 
 	public MoveSelectScreen(Character[] party, GameThread gamethread){
 		this.gamethread = gamethread;
-		currentparty = new Character[4];
-		numCasters = 0;
-		for(int i = 0; i < party.length; i++){
-			if(party[i] == null){
-				System.out.println(i+" is null");
-				continue;
-			}
-			currentparty[numCasters] = party[i];
-			numCasters++;
-			System.out.println(party[i].getName());
-		}
+		currentparty = party;
+		
+		initialize();
+		
 		
 		vbox = new VBox();
 		vbox.setMinHeight(Game.SCREEN_HEIGHT*0.50);
@@ -68,20 +65,52 @@ public class MoveSelectScreen {
 		//there needs to be a spell array for each player that is accessed with currentSpell
 	}
 	
-
+	public void findFirstCaster(){
+		for(int i = 0; i < currentparty.length; i++){
+			if(currentparty[i]!=null){
+				if(firstCaster == -1){
+					firstCaster = i;
+				}
+				//firstCaster = i;
+				numCasters++;
+			}
+		}
+	}
+	
+	public void gotoFirstCaster(){
+		currentCaster = firstCaster;
+	}
+	
+	public void nextCaster(){
+		for(int i = currentCaster; i< currentparty.length; i++){
+			if(currentparty[i]!=null){
+				currentCaster = i;
+			}
+		}
+	}
+	
+	public void previousCaster(){
+		for(int i = currentCaster; i>=0; i--){
+			if(currentparty[i]!=null){
+				currentCaster = i;
+			}
+		}
+	}
 	
 	public void initialize(){
 		// get number of spells, number of characters
+		findFirstCaster();
+		image = new Image(new File("dragoon chibi.png").toURI().toString());
 	}
 	
 	//public void reset?
 	
 	
 	public void startPick(){
-		currentCaster = 0;	
-		spellintegers = new int[numCasters];
+		//currentCaster = 0;
+		gotoFirstCaster();
 		isPicking = true;
-		spellqueue = new ArrayList<String>();
+		spellqueue = new String[4];
 		show();
 	}
 	
@@ -90,12 +119,6 @@ public class MoveSelectScreen {
 		System.out.println("finished pick");
 		isPicking = false;
 		hide();
-		for(int i = 0; i < spellintegers.length; i++){
-			System.out.println(currentparty[i].getName());
-			spellqueue.add((currentparty[i].getEquipment())[0].getSpell(spellintegers[i])); // party's character's equipment's spell
-			System.out.println(currentparty[i].getEquipment()[0].getSpell(spellintegers[i]));
-		}
-		spellintegers = null;
 	}
 	
 	public void handleMouseClick(MouseEvent e){
@@ -106,7 +129,9 @@ public class MoveSelectScreen {
 		} else if (e.getButton() == MouseButton.SECONDARY){
 			//undo pick, maybe move this to its own method
 			if(currentCaster > 0){
-				currentCaster--;
+				previousCaster();
+				hide();
+				show();
 				//graphic changes, theres bound to be animation anwyay so maybe put it in update
 			} else {
 				//play cannot sound
@@ -141,8 +166,8 @@ public class MoveSelectScreen {
 	
 	public void setButtons(){		
 		//todo set sound effects for clicks
-		spell1 = new Button(currentparty[currentCaster].getSpells()[0]);
-		spell1.setOnMouseReleased(new EventHandler<MouseEvent>(){
+		spell0 = new Button(currentparty[currentCaster].getSpells()[0]);
+		spell0.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
 			public void handle(MouseEvent e) {
@@ -151,8 +176,8 @@ public class MoveSelectScreen {
 			}
 			
 		});
-		spell2 = new Button(currentparty[currentCaster].getSpells()[1]);
-		spell2.setOnMouseReleased(new EventHandler<MouseEvent>(){
+		spell1 = new Button(currentparty[currentCaster].getSpells()[1]);
+		spell1.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
 			public void handle(MouseEvent e) {
@@ -161,8 +186,8 @@ public class MoveSelectScreen {
 			}
 			
 		});
-		spell3 = new Button(currentparty[currentCaster].getSpells()[2]);
-		spell3.setOnMouseReleased(new EventHandler<MouseEvent>(){
+		spell2 = new Button(currentparty[currentCaster].getSpells()[2]);
+		spell2.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
 			public void handle(MouseEvent e) {
@@ -171,8 +196,8 @@ public class MoveSelectScreen {
 			}
 			
 		});
-		spell4 = new Button(currentparty[currentCaster].getSpells()[3]);
-		spell4.setOnMouseReleased(new EventHandler<MouseEvent>(){
+		spell3 = new Button(currentparty[currentCaster].getSpells()[3]);
+		spell3.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
 			public void handle(MouseEvent e) {
@@ -181,13 +206,13 @@ public class MoveSelectScreen {
 			}
 			
 		});
-
-		spell1.setMaxWidth(Game.SCREEN_WIDTH*0.10);
-		spell1.setLayoutX(250);
-		spell2.setMaxWidth(Game.SCREEN_WIDTH*0.10);
-		spell3.setMaxWidth(Game.SCREEN_WIDTH*0.10);
-		spell4.setMaxWidth(Game.SCREEN_WIDTH*0.10);
 		
+		spell0.setMaxWidth(Game.SCREEN_WIDTH*0.25);
+		spell1.setMaxWidth(Game.SCREEN_WIDTH*0.25);
+		spell2.setMaxWidth(Game.SCREEN_WIDTH*0.25);
+		spell3.setMaxWidth(Game.SCREEN_WIDTH*0.25);
+		
+		spell0.setGraphic(new ImageView(image));
 	}
 	
 	public void show(){
@@ -219,38 +244,39 @@ public class MoveSelectScreen {
 	
 
 	public void removeButtons() {
+		vbox.getChildren().remove(spell0);
 		vbox.getChildren().remove(spell1);
 		vbox.getChildren().remove(spell2);
 		vbox.getChildren().remove(spell3);
-		vbox.getChildren().remove(spell4);
 		
 		
 	}
 	
 	public void drawButtons(){
+		vbox.getChildren().add(spell0);
 		vbox.getChildren().add(spell1);
 		vbox.getChildren().add(spell2);
 		vbox.getChildren().add(spell3);
-		vbox.getChildren().add(spell4);
 		
 		
 		
 	}
 	
-	public ArrayList<String> getSpellQueue(){
+	public String[] getSpellQueue(){
 		return spellqueue;
 	}
 	
 	public void pickSpell(int spell){
 		System.out.println("currentCaster: "+ currentCaster +" spell is "+spell);
-		spellintegers[currentCaster] = spell;
-		if(currentCaster != numCasters -1){
-			currentCaster++;
-		}
+		spellqueue[currentCaster] = currentparty[currentCaster].getSpells()[spell];
+		nextCaster();
 		hide();
 		show();
 	}
 	
+	public int getCurrentCaster(){
+		return currentCaster;
+	}
 
 
 }

@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 public class BattleManager{
 // controls characters, status effects, damage, hp, etc
 	EnemyAI enemyai;
-	ArrayList<String> spellqueue;
+	String[] spellqueue;
 	MoveSelectScreen moveselect;
 	PartyManager partymanager;
 	InBattleGraphics inbattlegraphics;
@@ -38,6 +38,7 @@ public class BattleManager{
 		partymanager = pm;
 		enemyai = new EnemyAI(partymanager.getParty(), new Slime());
 		moveselect = new MoveSelectScreen(partymanager.getParty(), gamethread);
+		inbattlegraphics = new InBattleGraphics(gamethread, this);
 	}
 	
 	public void doKeyboardAction(KeyEvent e){
@@ -56,6 +57,10 @@ public class BattleManager{
 			case TAB:
 				if(nextPickTimer >= testingPickTimerDelay){
 					currentState = BattleState.MOVE_SELECT;
+					inbattlegraphics.showEnemy = false;
+					inbattlegraphics.isInMenu = true;
+					
+					inbattlegraphics.hideAttackText();
 					nextPickTimer = 0;
 					System.out.println("Entering move select");
 					moveselect.startPick();
@@ -67,31 +72,34 @@ public class BattleManager{
 				}
 				break;
 			case Q:
-				System.out.println("Switching char 0");
-				currentChar = 0;
+				if(partymanager.getParty()[0] != null){
+
+					System.out.println("Switching char 0");
+					currentChar = 0;
+				}
 				break;
 			case W:
-				if(partysize > 1){
+
+				if(partymanager.getParty()[1] != null){
+
 					System.out.println("Switching char 1");
 					currentChar = 1;
-				} else {
-					System.out.println("Cannot switch char, size too small");
 				}
 				break;
 			case E:
-				if(partysize > 2){
+
+				if(partymanager.getParty()[2] != null){
+
 					System.out.println("Switching char 2");
-					currentChar = 2;
-				} else {
-					System.out.println("Cannot switch char, size too small");
+						currentChar = 2;
 				}
 				break;
 			case R:
-				if(partysize > 3){
+
+				if(partymanager.getParty()[3] != null){
+
 					System.out.println("Switching char 3");
 					currentChar = 3;
-				} else {
-					System.out.println("Cannot switch char, size too small");
 				}
 				break;
 			default:
@@ -105,14 +113,17 @@ public class BattleManager{
 			moveselect.handleMouseClick(e);
 			if(moveselect.isPicking == false){
 				System.out.println("Finished picking, moving to Battle");
+				inbattlegraphics.showEnemy(true);
+				inbattlegraphics.isInMenu = false;
 				currentState = BattleState.IN_BATTLE;
 				spellqueue = moveselect.getSpellQueue();
 			}
 		} else if(currentState == BattleState.IN_BATTLE){
 			if(e.getButton() == MouseButton.PRIMARY){ // Possible efficiency increase here, cpu calls on ArrayList
-				if(spellqueue.get(currentChar)!= "cd"){
-					System.out.println("Casting spell " + spellqueue.get(currentChar));
-					spellqueue.set(currentChar, "cd");
+				if(spellqueue[currentChar]!= "cd"){
+					inbattlegraphics.showAttackText(spellqueue[currentChar]);
+					System.out.println("Casting spell " + spellqueue[currentChar]);
+					spellqueue[currentChar] = "cd";
 				} else {
 					System.out.println("Spell on cd");
 				}
@@ -135,16 +146,31 @@ public class BattleManager{
 		// TODO: checks for who fights first
 		System.out.println("Battle Starting");
 		System.out.println("Move Select screen displays");
-		currentChar = 0;
+		for(int i = 0; i<partymanager.getParty().length; i++){
+			if(partymanager.getParty()[i] != null){
+				currentChar = i;
+				System.out.println("Character found, currentChar is "+i);
+				break;
+			}
+		}
 		partysize = partymanager.getParty().length;
 		currentState = BattleState.MOVE_SELECT;
 		moveselect.startPick();
 		enemyai.start();
+		inbattlegraphics.initialise();
 	}
 
 	
 	synchronized public BattleState getCurrentBattleState(){
 		return currentState;
+	}
+	
+	synchronized public int getCurrentCaster(){
+		return moveselect.getCurrentCaster();
+	}
+	
+	synchronized public Character[] getParty(){
+		return partymanager.getParty();
 	}
 	
 	synchronized public void update(){
@@ -182,6 +208,10 @@ public class BattleManager{
 		//System.out.println("nextPickTimer: "+nextPickTimer);
 		return nextPickTimer;
 		
+	}
+	
+	public void draw(){
+		inbattlegraphics.draw();
 	}
 
 }
