@@ -28,7 +28,7 @@ public class GameMenu {
 	public GameMenu(GameThread gamethread){
 		this.gamethread = gamethread;
 		context = gamethread.getContext();
-		image = new Image(new File("menu.png").toURI().toString());
+		image = new Image(new File("res/hud/menu.png").toURI().toString());
 		vbox = new VBox();
 		vbox.setMinHeight(Game.SCREEN_HEIGHT);
 		vbox.setMinWidth(Game.SCREEN_WIDTH*0.20);
@@ -71,7 +71,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 						
 						currentlySelected = 0;
 						enterNextMenu();
@@ -91,7 +91,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 1;
 						enterNextMenu();
@@ -111,7 +111,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 2;
 						enterNextMenu();
@@ -131,7 +131,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 3;
 						enterNextMenu();
@@ -151,7 +151,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 4;
 						enterNextMenu();
@@ -171,7 +171,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 5;
 						enterNextMenu();
@@ -191,7 +191,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 6;
 						enterNextMenu();
@@ -211,7 +211,7 @@ public class GameMenu {
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						currentlySelected = 7;
 						enterNextMenu();

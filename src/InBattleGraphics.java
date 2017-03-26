@@ -1,3 +1,4 @@
+
 import java.io.File;
 
 import javafx.animation.AnimationTimer;
@@ -55,7 +56,7 @@ public class InBattleGraphics {
 		attacktext = new Label();
 		attacktext.setTextFill(Color.RED);
 		attacktext.setFont(new Font("Arial", 30));
-		Image image = new Image(new File("dragoon chibi.png").toURI().toString());
+		Image image = new Image(new File("res/misc/dragoon chibi.png").toURI().toString());
 		attacktext.setGraphic(new ImageView(image));
 		attacktext.setText("HELLO WORLD");
 	}
@@ -130,26 +131,26 @@ public class InBattleGraphics {
 			} else {
 				switch(i){
 				case 0:
-					player0 = new Image(new File(party[i].getName()+"_fight.png").toURI().toString());
-					player0_grey = new Image(new File(party[i].getName()+"_grey.png").toURI().toString());
+					player0 = new Image(new File("res/character/"+party[i].getName()+"_fight.png").toURI().toString());
+					player0_grey = new Image(new File("res/character/"+party[i].getName()+"_grey.png").toURI().toString());
 					player0Scale = player0.getHeight()/(Game.SCREEN_HEIGHT*0.75);
 					System.out.println("player 0 loaded");
 					break;
 				case 1:
-					player1 = new Image(new File(party[i].getName()+"_fight.png").toURI().toString());
-					player1_grey = new Image(new File(party[i].getName()+"_grey.png").toURI().toString());
+					player1 = new Image(new File("res/character/"+party[i].getName()+"_fight.png").toURI().toString());
+					player1_grey = new Image(new File("res/character/"+party[i].getName()+"_grey.png").toURI().toString());
 					player1Scale = player1.getHeight()/(Game.SCREEN_HEIGHT*0.75);
 					System.out.println("player 1 loaded");
 					break;
 				case 2:
-					player2 = new Image(new File(party[i].getName()+"_fight.png").toURI().toString());
-					player2_grey = new Image(new File(party[i].getName()+"_grey.png").toURI().toString());
+					player2 = new Image(new File("res/character/"+party[i].getName()+"_fight.png").toURI().toString());
+					player2_grey = new Image(new File("res/character/"+party[i].getName()+"_grey.png").toURI().toString());
 					player2Scale = player2.getHeight()/(Game.SCREEN_HEIGHT*0.75);
 					System.out.println("player 2 loaded");
 					break;
 				case 3:
-					player3 = new Image(new File(party[i].getName()+"_fight.png").toURI().toString());
-					player3_grey = new Image(new File(party[i].getName()+"_grey.png").toURI().toString());
+					player3 = new Image(new File("res/character/"+party[i].getName()+"_fight.png").toURI().toString());
+					player3_grey = new Image(new File("res/character/"+party[i].getName()+"_grey.png").toURI().toString());
 					player3Scale = player3.getHeight()/(Game.SCREEN_HEIGHT*0.75);
 					System.out.println("player 3 loaded");
 					break;
@@ -160,10 +161,10 @@ public class InBattleGraphics {
 			
 		}
 
-		enemy = new Image(new File("golem.png").toURI().toString());
+		enemy = new Image(new File("res/enemy/golem.png").toURI().toString());
 		enemyScale = enemy.getHeight()/(Game.SCREEN_HEIGHT*0.75);
 		
-		background = new Image(new File("throne room.jpg").toURI().toString());
+		background = new Image(new File("res/background/throne room.jpg").toURI().toString());
 		
 	}
 	

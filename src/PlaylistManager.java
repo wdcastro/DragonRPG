@@ -54,7 +54,7 @@ public class PlaylistManager extends Thread{
 	
 	public void loadPlaylist(String name){
 		FileIOManager filemanager = new FileIOManager();
-		byte[] bytesRead = filemanager.readBytesFromFile(name);
+		byte[] bytesRead = filemanager.readBytesFromFile("res/playlists/"+name);
 		try {
 			String playliststr = new String(bytesRead, "UTF-8");
 			String[] playlistarray = playliststr.split(Game.newLine);

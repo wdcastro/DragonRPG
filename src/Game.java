@@ -149,7 +149,7 @@ public class Game extends Application{
 	}
 
 	public VBox setUpMainMenuItems(MainMenu mainmenu){
-		AudioClip hover = new AudioClip(new File("buttonhover.mp3").toURI().toString());
+		AudioClip hover = new AudioClip(new File("res/sound/buttonhover.mp3").toURI().toString());
 
 		Button[] b = generateMenuItems();
 		VBox vbbuttons = new VBox();
@@ -298,7 +298,7 @@ public class Game extends Application{
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 						hasClicked = true;
 						updateGameState(SystemState.IN_GAME);
 						click.play();	
@@ -318,7 +318,7 @@ public class Game extends Application{
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						updateGameState(SystemState.LOAD_GAME);
 						hasClicked = true;
@@ -339,7 +339,7 @@ public class Game extends Application{
 					
 					@Override
 					public void run() {
-						AudioClip click = new AudioClip(new File("buttonclick.mp3").toURI().toString());
+						AudioClip click = new AudioClip(new File("res/sound/buttonclick.mp3").toURI().toString());
 
 						updateGameState(SystemState.SETTINGS);
 						hasClicked = true;

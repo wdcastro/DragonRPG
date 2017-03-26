@@ -1,3 +1,4 @@
+
 import java.io.File;
 
 import javafx.scene.image.Image;
@@ -29,7 +30,7 @@ public class HUD {
 		this.gamethread = gamethread;
 		this.pickTimerDelay = pickTimerDelay;
 		System.out.println("pickTimerDelay: "+pickTimerDelay);
-		timerbar = new Image(new File("timer bar.png").toURI().toString());
+		timerbar = new Image(new File("res/hud/timer bar.png").toURI().toString());
 		timerx1 = Game.SCREEN_WIDTH/10;
 		timerx2 = Game.SCREEN_WIDTH*8/10;
 		System.out.println("timerx2: "+timerx2);

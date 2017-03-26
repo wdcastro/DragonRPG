@@ -78,12 +78,12 @@ public class TileManager{
 	}
 	
 	public void loadMapImage(String path){
-		File file = new File(path);
+		File file = new File("res/mapdata/"+path);
 		try{
 			image = new Image(file.toURI().toString());
 			TILES_PER_LINE_IN_SOURCE = (int) (image.getWidth()/getTileWidth());
 			System.out.println("Tiles per line in source is "+TILES_PER_LINE_IN_SOURCE);
-			playerimage = new Image(new File("dragoon chibi.png").toURI().toString());
+			playerimage = new Image(new File("res/misc/dragoon chibi.png").toURI().toString());
 		} catch(Exception e){
 			e.printStackTrace();
 		}
@@ -101,7 +101,8 @@ public class TileManager{
 	public void loadMapInfo(String path){
 		
 		FileIOManager filemanager = new FileIOManager();
-		byte[] bytesRead = filemanager.readBytesFromFile(path);
+		byte[] bytesRead = filemanager.readBytesFromFile("res/mapdata/"+path);
+
 		
 		try {
 			String byteContents = new String(bytesRead, "UTF-8");
@@ -157,7 +158,7 @@ public class TileManager{
 	public void loadTileLayer(String path, int layerNumber){
 
 		FileIOManager filemanager = new FileIOManager();
-		byte[] bytesRead = filemanager.readBytesFromFile(path);
+		byte[] bytesRead = filemanager.readBytesFromFile("res/mapdata/"+path);
 		
 		
 		

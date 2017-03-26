@@ -1,6 +1,3 @@
-import java.io.File;
-
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 
 public class PartyManager {
@@ -10,18 +7,15 @@ public class PartyManager {
 	Character[] party = new Character[4];
 	int currentChar = 0;
 	
-	Image image;
 	
 	boolean isShowing = false;
 	GameThread gamethread;
 	
 	public PartyManager(GameThread gamethread){
 		this.gamethread = gamethread;
-		image = new Image(new File("karate guy.png").toURI().toString());
 		party[2] = black;
 		party[1] = white;
-		party[0] = black;
-		party[3] = white;
+
 	}
 	
 	public void addToParty(Character character, int position){		
@@ -36,8 +30,7 @@ public class PartyManager {
 		return party;		 
 	}
 	
-	public void draw(){
-		gamethread.getContext().drawImage(image, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
+	public void draw(){//TODO: PARTY CONTROL MENU
 		//paint player portraits
 		//paint player names
 		//paint spell list

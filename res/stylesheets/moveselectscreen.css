@@ -1,0 +1,12 @@
+.button{
+-fx-opacity: 0.5;
+-fx-background-color: #000000;
+}
+
+.moveselectbox{
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: blue;
+}	

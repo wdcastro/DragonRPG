@@ -12,10 +12,12 @@ public class MainMenu {
 	
 	int currentBGFrame = 1;
 	Image bgimage;
-	String bgimageStr = "background.png";
-		
+	
 	public MainMenu(){
-		bgimage = new Image(new File(bgimageStr).toURI().toString());
+
+
+		bgimage = new Image(new File("res/background/background.png").toURI().toString());
+		
 	}
 	
 	public void cropImage(){

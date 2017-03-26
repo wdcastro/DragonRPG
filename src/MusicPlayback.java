@@ -14,7 +14,7 @@ public class MusicPlayback extends Thread {
 	boolean isFinished = false;
 	
 	public MusicPlayback(String songname){
-		media = new Media(new File(songname).toURI().toString());
+		media = new Media(new File("res/music/"+songname).toURI().toString());
 		mediaplayer = new MediaPlayer(media);
 	}
 	

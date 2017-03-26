@@ -1,5 +1,5 @@
 import java.io.File;
-import java.util.ArrayList;
+import java.net.URL;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -14,10 +14,10 @@ import javafx.scene.layout.VBox;
 
 
 public class MoveSelectScreen {
+
 	/*
-	 * TODO: limit party size casters
+	 * 
 	 */
-	
 	String[] spellqueue;
 	
 	Character[] currentparty;
@@ -46,17 +46,13 @@ public class MoveSelectScreen {
 		
 		
 		vbox = new VBox();
+		vbox.getStylesheets().add(new File("res/stylesheets/moveselectscreen.css").toURI().toString());
 		vbox.setMinHeight(Game.SCREEN_HEIGHT*0.50);
 		vbox.setMinWidth(Game.SCREEN_WIDTH*0.30);
 		vbox.setAlignment(Pos.BOTTOM_CENTER);
 		vbox.setSpacing(10);
 		vbox.setLayoutY(Game.SCREEN_HEIGHT*0.10);
-		vbox.setStyle(//"-fx-padding: 10;" + 
-                 "-fx-border-style: solid inside;" + 
-                 "-fx-border-width: 2;" +
-                 "-fx-border-insets: 5;" + 
-                 "-fx-border-radius: 5;" + 
-                 "-fx-border-color: blue;");
+		vbox.getStyleClass().add("moveselectbox");
                  
 		
 		System.out.println("numCasters is "+ numCasters);
@@ -100,7 +96,7 @@ public class MoveSelectScreen {
 	public void initialize(){
 		// get number of spells, number of characters
 		findFirstCaster();
-		image = new Image(new File("dragoon chibi.png").toURI().toString());
+		image = new Image(new File("res/misc/dragoon chibi.png").toURI().toString());
 	}
 	
 	//public void reset?
@@ -167,6 +163,7 @@ public class MoveSelectScreen {
 	public void setButtons(){		
 		//todo set sound effects for clicks
 		spell0 = new Button(currentparty[currentCaster].getSpells()[0]);
+		
 		spell0.setOnMouseReleased(new EventHandler<MouseEvent>(){
 
 			@Override
