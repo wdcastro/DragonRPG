@@ -30,33 +30,29 @@ public class GameMenu {
 		context = gamethread.getContext();
 		image = new Image(new File("res/hud/menu.png").toURI().toString());
 		vbox = new VBox();
+		vbox.getStylesheets().add(new File("res/stylesheets/gamemenu.css").toURI().toString());
 		vbox.setMinHeight(Game.SCREEN_HEIGHT);
 		vbox.setMinWidth(Game.SCREEN_WIDTH*0.20);
 		vbox.setSpacing(Game.SCREEN_HEIGHT/12);
 		vbox.setLayoutX(0);
 		vbox.setLayoutY(0);
-		vbox.setStyle(//"-fx-padding: 10;" + 
-                "-fx-border-style: solid inside;" + 
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" + 
-                "-fx-border-radius: 5;" + 
-                "-fx-border-color: blue;");
+		vbox.getStyleClass().add("pausemenu");
 		Button[] buttons = generateMenuItems();
 		for(int i = 0; i < buttons.length; i++){
 			buttons[i].setMaxWidth(vbox.getMinWidth());
-			buttons[i].setStyle(" -fx-border-color: transparent;" +
+			/*buttons[i].setStyle(" -fx-border-color: transparent;" +
     "-fx-border-width: 0;" +
     "-fx-background-radius: 0;" +
     "-fx-background-color: transparent;" +
-    "-fx-font-size: 20px;" + /* 12 */
-    "-fx-text-fill: #828282;");
+    "-fx-font-size: 20px;" + // 12 
+    "-fx-text-fill: #828282;");*/
 			vbox.getChildren().add(buttons[i]);
 		}
 		
 	}
 
 	public void draw(){
-		context.drawImage(image, 0, 0, Game.SCREEN_WIDTH*0.25, Game.SCREEN_HEIGHT);
+		//context.drawImage(image, 0, 0, Game.SCREEN_WIDTH*0.25, Game.SCREEN_HEIGHT);
 	}
 	
 	public Button[] generateMenuItems(){
@@ -284,10 +280,13 @@ public class GameMenu {
 			selectNext();
 			break;
 		case ENTER:
-			enterNextMenu();
+			isShowing = false;
+			hide();
+			gamethread.setGameState(GameState.IN_CITY);
 			break;
 		case ESCAPE:
 			isShowing = false;
+			hide();
 			gamethread.setGameState(GameState.IN_CITY);
 			break;
 		default:

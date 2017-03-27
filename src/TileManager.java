@@ -177,7 +177,7 @@ public class TileManager{
 				interactablelayer = new Interactable[objmap.length];
 				for(int i = 0; i<objmap.length; i++){
 					if(objmap[i]!=-1){
-						interactablelayer[i] = new testInteractable();
+						interactablelayer[i] = new Apples();
 						System.out.println("interactable added at " + i);
 					}
 				}

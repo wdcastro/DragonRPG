@@ -187,7 +187,15 @@ public class MapManager extends Thread{
 				Interactable item = tilemanager.getInteractables()[arraynumber];
 				
 				if (item != null){
-					gt.showDialogBox(item.getInteractText());
+					if(Math.abs(playerx-(camL+tilex)) <= 1 && Math.abs(playery-(camU+tiley)) <= 1){
+						System.out.println("player is adjacent");
+						item.nearInteract();
+						gt.showDialogBox(item.getInteractText());
+					}
+					else {
+						item.farInteract();
+						gt.showDialogBox(item.getInteractText());
+					}
 				} else {
 					System.out.println("item is null");
 				}

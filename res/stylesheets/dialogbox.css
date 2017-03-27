@@ -1,0 +1,15 @@
+.dialogbox{
+-fx-opacity: 0.8;
+-fx-background-color: #000000;
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: black;
+}
+
+.label{
+-fx-opacity: 1.0;
+-fx-text-fill: #99fe00;
+-fx-font-size: 20px;
+}

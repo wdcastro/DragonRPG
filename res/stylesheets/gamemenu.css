@@ -1,0 +1,24 @@
+.pausemenu{
+-fx-opacity: 0.8;
+-fx-background-color: #000000;
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: black;
+}
+
+.button{
+
+-fx-text-fill: #ffffff;
+-fx-background-color:transparent;
+-fx-font-size:20px;
+}
+
+
+.button:hover{
+
+-fx-text-fill: #ff0077;
+-fx-background-color:#ffffff;
+-fx-font-size:20px;
+}

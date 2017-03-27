@@ -1,3 +1,5 @@
+import java.io.File;
+
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -24,18 +26,21 @@ public class DialogBox extends Thread{
 	
 	public void run(){
 		vbox = new VBox();
+		vbox.getStylesheets().add(new File("res/stylesheets/dialogbox.css").toURI().toString());
 		vbox.setMinHeight(Game.SCREEN_HEIGHT*0.30);
 		vbox.setMinWidth(Game.SCREEN_WIDTH*0.90);
 		vbox.setSpacing(10);
 		vbox.setLayoutX(Game.SCREEN_WIDTH*0.05);
 		vbox.setLayoutY(Game.SCREEN_HEIGHT*0.70);
-		vbox.setStyle(//"-fx-padding: 10;" + 
+		vbox.getStyleClass().add("dialogbox");
+		/*vbox.setStyle(//"-fx-padding: 10;" + 
                  "-fx-border-style: solid inside;" + 
                  "-fx-border-width: 2;" +
                  "-fx-border-insets: 5;" + 
                  "-fx-border-radius: 5;" + 
                  "-fx-border-color: blue;" +
                  "-fx-background-color: #000000;");
+                 */
 		label.setText("");
         label.setTextFill(Color.WHITE);
         label.setFont(Font.font("Vernada",20));
