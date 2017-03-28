@@ -10,14 +10,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 
 public class MoveSelectScreen {
 
-	/*
-	 * 
-	 */
 	String[] spellqueue;
 	
 	Character[] currentparty;
@@ -35,6 +33,7 @@ public class MoveSelectScreen {
 	Button spell2;
 	Button spell3;
 	
+	BorderPane holderPane;
 	VBox vbox;
 
 
@@ -44,21 +43,24 @@ public class MoveSelectScreen {
 		
 		initialize();
 		
+		holderPane = new BorderPane();
+		holderPane.setMinHeight(Game.SCREEN_HEIGHT*0.80);
+
+		holderPane.getStylesheets().add(new File("res/stylesheets/moveselectscreen.css").toURI().toString());
+
+		holderPane.getStyleClass().add("holderpane");
+
+		
 		
 		vbox = new VBox();
-		vbox.getStylesheets().add(new File("res/stylesheets/moveselectscreen.css").toURI().toString());
-		vbox.setMinHeight(Game.SCREEN_HEIGHT*0.50);
-		vbox.setMinWidth(Game.SCREEN_WIDTH*0.30);
-		vbox.setAlignment(Pos.BOTTOM_CENTER);
-		vbox.setSpacing(10);
-		vbox.setLayoutY(Game.SCREEN_HEIGHT*0.10);
+		holderPane.setBottom(vbox);
+
 		vbox.getStyleClass().add("moveselectbox");
+		
+		
                  
 		
 		System.out.println("numCasters is "+ numCasters);
-		//numMaxSpells = get currentChar character from character array and then get the number of max spells from that - this might lag. if it does, preload all values
-		//there needs to be a player array somewhere
-		//there needs to be a spell array for each player that is accessed with currentSpell
 	}
 	
 	public void findFirstCaster(){
@@ -161,7 +163,7 @@ public class MoveSelectScreen {
 	}
 	
 	public void setButtons(){		
-		//todo set sound effects for clicks
+		//to do set sound effects for clicks
 		spell0 = new Button(currentparty[currentCaster].getSpells()[0]);
 		
 		spell0.setOnMouseReleased(new EventHandler<MouseEvent>(){
@@ -219,7 +221,7 @@ public class MoveSelectScreen {
 			public void run() {
 				setButtons();
 				drawButtons();
-				gamethread.getRootNode().getChildren().add(vbox);
+				gamethread.getRootNode().getChildren().add(holderPane);
 			}
 			
 		});
@@ -228,14 +230,11 @@ public class MoveSelectScreen {
 	
 	public void hide(){
 		Platform.runLater(new Runnable(){
-
 			@Override
 			public void run() {
-				gamethread.getRootNode().getChildren().remove(vbox);
+				gamethread.getRootNode().getChildren().remove(holderPane);
 				removeButtons();
-				
 			}
-			
 		});
 	}
 	
@@ -245,8 +244,6 @@ public class MoveSelectScreen {
 		vbox.getChildren().remove(spell1);
 		vbox.getChildren().remove(spell2);
 		vbox.getChildren().remove(spell3);
-		
-		
 	}
 	
 	public void drawButtons(){
@@ -254,9 +251,6 @@ public class MoveSelectScreen {
 		vbox.getChildren().add(spell1);
 		vbox.getChildren().add(spell2);
 		vbox.getChildren().add(spell3);
-		
-		
-		
 	}
 	
 	public String[] getSpellQueue(){
@@ -274,6 +268,4 @@ public class MoveSelectScreen {
 	public int getCurrentCaster(){
 		return currentCaster;
 	}
-
-
 }

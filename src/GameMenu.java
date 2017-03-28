@@ -306,6 +306,8 @@ public class GameMenu {
 			break;
 		case 1:
 			System.out.println("Enter item screen");
+			hide();
+			gamethread.setGameState(GameState.INVENTORY);
 			break;
 		case 2:
 			System.out.println("Enter craft screen");

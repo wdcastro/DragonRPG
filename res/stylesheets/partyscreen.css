@@ -1,0 +1,31 @@
+.holderpane{
+-fx-padding: 30;
+-fx-opacity: 0.8;
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: blue;
+-fx-hgap: 10;
+-fx-vgap: 10;
+}
+
+.partypane{
+-fx-opacity: 1.0;
+-fx-background-color: #000000;
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: blue;
+}
+
+.detailpane{
+-fx-opacity: 1.0;
+-fx-background-color: #000000;
+-fx-border-style: solid inside;
+-fx-border-width: 2;
+-fx-border-insets: 5;
+-fx-border-radius: 5;
+-fx-border-color: red;
+}

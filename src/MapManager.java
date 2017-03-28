@@ -85,7 +85,7 @@ public class MapManager extends Thread{
 	
 	public void moveDown(){
 			if(!tilemanager.checkCollision(playerx, playery+1)){
-				if(camD!=tilemanager.getMapHeight() && playery>(camD+camU)/2){
+				if(camD!=tilemanager.getMapHeight()-1 && playery>(camD+camU)/2){
 					camD++;
 					camU++;
 				}
@@ -122,7 +122,7 @@ public class MapManager extends Thread{
 	
 	public void moveRight(){
 			if(!tilemanager.checkCollision(playerx+1, playery)){
-				if(camR!=tilemanager.getMapWidth() && playerx>(camR+camL)/2){
+				if(camR!=tilemanager.getMapWidth()-1 && playerx>(camR+camL)/2){
 					camL++;
 					camR++;
 				}

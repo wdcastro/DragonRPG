@@ -56,8 +56,8 @@ public class TileManager{
 	}
 	
 	public void drawTrim(int up, int left, int j){
-		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/getTileWidth(); // need to modify these with the number of tiles wide/high so that they dont loop and draw
-		int numRowsDownToDraw = Game.SCREEN_HEIGHT/getTileHeight(); // if ( screen width - player x  > tiles to render/2) stop rendering, stop panning camera
+		int numTilesAcrossToDraw = Game.SCREEN_WIDTH/getTileWidth() +1; // need to modify these with the number of tiles wide/high so that they dont loop and draw
+		int numRowsDownToDraw = Game.SCREEN_HEIGHT/getTileHeight() +1; // if ( screen width - player x  > tiles to render/2) stop rendering, stop panning camera
 		int firstTile = (MAP_WIDTH*up)+left;
 		
 		int[] layer;

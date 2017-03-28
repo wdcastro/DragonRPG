@@ -1,5 +1,3 @@
-import javafx.scene.input.KeyEvent;
-
 public class PartyManager {
 	
 	BlackDragon black = new BlackDragon("Iltas", 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 100);
@@ -30,33 +28,5 @@ public class PartyManager {
 		return party;		 
 	}
 	
-	public void draw(){//TODO: PARTY CONTROL MENU
-		//paint player portraits
-		//paint player names
-		//paint spell list
-	}
-	
-	public void show(){
-		isShowing = true;
-		draw();
-	}
-	
-	public void hide(){
-		isShowing = false;
-	}
-	
-	public void handleKeyRelease(KeyEvent e){
-		switch(e.getCode()){
-		case A:
-			break;
-		case D:
-			break;
-		case ESCAPE:
-			hide();
-			gamethread.setGameState(GameState.IN_MENU);
-		default:
-			break;
-		}
-	}
 
 }

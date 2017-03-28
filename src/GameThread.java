@@ -20,6 +20,8 @@ public class GameThread extends Thread{
 	PlaylistManager playlistmanager;
 	DialogBox dialogbox;
 	HUD hud;
+	PartyMenu partymenu;
+	InventoryMenu inventorymenu;
 	
 	//private boolean isRunning = false;
 	private boolean isReady = false;
@@ -83,6 +85,9 @@ public class GameThread extends Thread{
 			mapmanager.update();
 			break;
 		case IN_MENU:
+			break;
+		case INVENTORY:
+			break;
 		default:
 			break;
 		}
@@ -104,6 +109,13 @@ public class GameThread extends Thread{
 		case IN_MENU:
 			mapmanager.draw();
 			gamemenu.draw();
+			break;
+		case PARTY_SCREEN:
+			mapmanager.draw();
+			//partymenu.draw(); //if we have animations
+			break;
+		case INVENTORY:
+			mapmanager.draw();
 			break;
 		default:
 			break;
@@ -136,7 +148,6 @@ public class GameThread extends Thread{
 				gamemenu.handleKeyRelease(e);
 				break;
 			case PARTY_SCREEN:
-				partymanager.handleKeyRelease(e);
 				break;
 			default:
 				break;
@@ -158,6 +169,13 @@ public class GameThread extends Thread{
 				break;
 			case IN_CITY:
 				mapmanager.handleMouseClick(e);
+				break;
+			case PARTY_SCREEN:
+				partymenu.handleMouseClick(e);
+				break;
+			case INVENTORY:
+				inventorymenu.handleMouseClick(e);
+				break;
 			default:
 				doMouse(e);
 				break;
@@ -166,8 +184,11 @@ public class GameThread extends Thread{
 	}
 	
 	public void showDialogBox(String text){
-		dialogbox.setText(text);
-		dialogbox.show();
+		if(gameState == GameState.IN_CITY){
+			dialogbox.setText(text);
+			dialogbox.show();
+		}
+		
 	}
 	
 	
@@ -177,10 +198,14 @@ public class GameThread extends Thread{
 	
 	public void setGameState(GameState gs){
 		gameState = gs;
+		//destroy all previous objects i.e set to null for memory and cpu updating
 		switch(gs){
+		case IN_CITY:
+			break;
 		case PARTY_SCREEN:
+			partymenu = new PartyMenu(this);
+			partymenu.show();
 			mapmanager.draw();
-			partymanager.show();
 			break;
 		case IN_MENU:
 			mapmanager.draw();
@@ -189,6 +214,10 @@ public class GameThread extends Thread{
 		case IN_BATTLE:
 			hud = new HUD(this, battlemanager.getPickTimerDelay());
 			battlemanager.startFight();
+			break;
+		case INVENTORY:
+			inventorymenu = new InventoryMenu(this);
+			inventorymenu.show();
 			break;
 		default:
 			break;
