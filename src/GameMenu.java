@@ -228,7 +228,7 @@ public class GameMenu {
 
 			@Override
 			public void run() {
-				gamethread.getRootNode().getChildren().add(vbox);
+				gamethread.getBasePane().getChildren().add(vbox);
 				
 			}
 			
@@ -243,7 +243,7 @@ public class GameMenu {
 
 			@Override
 			public void run() {
-				gamethread.getRootNode().getChildren().remove(vbox);
+				gamethread.getBasePane().getChildren().remove(vbox);
 				
 			}
 			

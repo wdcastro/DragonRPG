@@ -52,6 +52,7 @@ public class Game extends Application{
 	private MainMenu mainmenu;
 	private Label label;
 	private AnimationTimer updateLoop;
+	private MusicPlayback mainTheme;
 	
 	
 	public static void main(String args[]){
@@ -66,14 +67,14 @@ public class Game extends Application{
 		// set up graphics groups
 		
 		root = new Group();
-		scene = new Scene(root,Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, Color.BLACK);		
+		scene = new Scene(root, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, Color.BLACK);		
 		canvas = new Canvas(Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
+		
 		stage.setTitle("Amazing RPG Simulator 2017");
 		stage.setResizable(false);
+		stage.sizeToScene(); //apparently a windows only java bug, that displays the scene even though canvas is on top, this fixes it
 
 
-
-		
 		label = new Label();
 
 
@@ -139,6 +140,14 @@ public class Game extends Application{
 				if(systemstate == SystemState.IN_GAME){
 					gamethread.stopAllThreads();
 				}
+				if(updateLoop != null){
+					updateLoop.stop();
+					
+				}
+				if(mainTheme != null){
+					mainTheme.stopMusic();
+					mainTheme = null;
+				}
 				Platform.exit();
 			}
 			
@@ -191,14 +200,25 @@ public class Game extends Application{
 				System.out.println("stopping update loop");
 				updateLoop.stop();
 			}
+			if(mainTheme != null){
+				mainTheme.stopMusic();
+				mainTheme = null;
+			}
 			Platform.runLater(new Runnable(){
 				@Override
 				public void run(){
 					root.getChildren().clear();
+					root.getChildren().add(label);
 					root.getChildren().add(canvas);
 					context = canvas.getGraphicsContext2D();
 					gamethread = new GameThread(context, root);
 					gamethread.start();
+					scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
+						@Override
+						public void handle(KeyEvent e){
+							gamethread.handleKeyPressed(e);
+						}
+					});
 					scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 				        @Override
 				        public void handle(KeyEvent e) {
@@ -257,7 +277,6 @@ public class Game extends Application{
 
 				@Override
 				public void handle(MouseEvent e) {
-					System.out.println("beep");
 				}
 				
 			});
@@ -265,15 +284,19 @@ public class Game extends Application{
 				@Override
 				public void run() {
 					root.getChildren().clear();
-					root.getChildren().add(label);
 					root.getChildren().add(canvas);
+					root.getChildren().add(label);
 					context = canvas.getGraphicsContext2D();
 					mainmenu = new MainMenu();
 					VBox vb = setUpMainMenuItems(mainmenu);
 					root.getChildren().add(vb);
 					systemstate = SystemState.MAIN_MENU;
 					updateLoop.start();
+					
 					System.out.println("starting update loop");
+					mainTheme = new MusicPlayback("crossingfield.mp3");
+					mainTheme.start();
+					System.out.println("starting main theme");
 				}
 				
 			});			

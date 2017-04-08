@@ -1,4 +1,3 @@
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -8,7 +7,6 @@ public class MapManager extends Thread{
 	
 	private int playerx;
 	private int playery;
-	private String levelName;
 	GameThread gt;
 	
 	private int camL = 0;
@@ -17,6 +15,9 @@ public class MapManager extends Thread{
 	private int camD = 21;
 	
 	private boolean isReady = false;
+	private boolean[] isDown = {false,false,false,false};
+	
+
 
 	MapLocation currentLocation = MapLocation.TEST_CITY;
 	TileManager tilemanager;
@@ -58,8 +59,11 @@ public class MapManager extends Thread{
 		}
 		
 		isReady = true;
-
-		//draw();
+		
+		//check for cutscene
+		if(gt.cutscenemanager.isCutscenePending()){
+			gt.cutscenemanager.startCutscene();
+		}
 	}
 
 	public void loadCity(){
@@ -70,12 +74,28 @@ public class MapManager extends Thread{
 		default:
 			break;
 		}
+		
 	}
 	
 	public void update(){
 		tilemanager.update();
-		//System.out.println("x: "+ playerx+" y: "+playery);
-		//System.out.println("left: "+unitsLeft+" right: "+unitsRight+" up: "+unitsUp+" down: "+unitsDown);
+		
+		if(!gt.mapanimationcontroller.isAnimating){
+			if(isDown[0] == true){
+				moveUp();
+			}
+			if(isDown[1] == true){
+				moveLeft();
+			}
+			if(isDown[2] == true){
+				moveDown();
+			}
+			if(isDown[3] == true){
+				moveRight();
+				
+			}
+			gt.mapanimationcontroller.animate();
+		}
 	}
 	
 	public void draw(){
@@ -135,19 +155,16 @@ public class MapManager extends Thread{
 	public void handleKeyRelease(KeyEvent e){ // will have to do boolean isAnimating and isKeyDown to constantly update char while held
 			switch (e.getCode()){
 			case W:
-				moveUp();
+				isDown[0] = false;
 				break;
 			case A:
-				// some other action 
-				moveLeft();
+				isDown[1] = false;
 				break;	
 			case S:
-				moveDown();
-				// some other action 
+				isDown[2] = false;
 				break;	
 			case D:
-				moveRight();
-				// some other action 
+				isDown[3] = false;
 				break;
 			case F:
 				System.out.println("camL :"+camL);
@@ -167,6 +184,43 @@ public class MapManager extends Thread{
 			}
 		draw();
 	}
+	
+	public void handleKeyPressed(KeyEvent e){ // will have to do boolean isAnimating and isKeyDown to constantly update char while held
+		switch (e.getCode()){
+		case W:
+
+			isDown[0] = true;
+			break;
+		case A:
+
+			isDown[1] = true;
+			break;	
+		case S:
+
+			isDown[2] = true;
+			break;	
+		case D:
+
+			isDown[3] = true;
+			break;
+		case F:
+			System.out.println("camL :"+camL);
+
+			System.out.println("camR :"+camR);
+
+			System.out.println("camU :"+camU);
+
+			System.out.println("camD :"+camD);
+
+			System.out.println("playerx :"+playerx);
+
+			System.out.println("playery :"+playery);
+			break;
+		default:
+			break;
+		}
+	draw();
+}
 
 	public void handleMouseClick(MouseEvent e) {
 		if (e.getButton() == MouseButton.PRIMARY){
@@ -179,8 +233,8 @@ public class MapManager extends Thread{
 			//use this to access array location
 			System.out.println("("+tilex+","+tiley+")");
 			if ((camU + tiley) == playery && (camL+tilex)==playerx){
-				System.out.println("this is me");
-				gt.showDialogBox("This is me");
+				gt.dialogmanager.addLines("This is me");
+				gt.dialogmanager.showDialogBox(false);
 			} else {
 				int arraynumber = (int) (((camU + tiley) * tilemanager.getMapWidth()) + (camL+tilex));
 				System.out.println("arraynumber to access is: "+arraynumber);
@@ -190,11 +244,14 @@ public class MapManager extends Thread{
 					if(Math.abs(playerx-(camL+tilex)) <= 1 && Math.abs(playery-(camU+tiley)) <= 1){
 						System.out.println("player is adjacent");
 						item.nearInteract();
-						gt.showDialogBox(item.getInteractText());
+						gt.dialogmanager.addLines(item.getInteractText());
+
+						gt.dialogmanager.showDialogBox(false);
 					}
 					else {
 						item.farInteract();
-						gt.showDialogBox(item.getInteractText());
+						gt.dialogmanager.addLines(item.getInteractText());
+						gt.dialogmanager.showDialogBox(false);
 					}
 				} else {
 					System.out.println("item is null");
@@ -203,7 +260,7 @@ public class MapManager extends Thread{
 			
 		}
 		else if (e.getButton() == MouseButton.SECONDARY){
-			
+			gt.dialogmanager.printLines();
 		}
 		
 	}

@@ -1,10 +1,13 @@
 import java.io.File;
+import java.util.ArrayList;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -41,34 +44,54 @@ public class InventoryMenu {
 		holderPane.setLeft(inventoryPane);
 		holderPane.setRight(detailPane);
 		
+		
 	}
 	
 	public void init(){
 		//for loop draw all items
+
+		for(int i = 0; i<PlayerDataManager.inventory.size();i++){
+			if(PlayerDataManager.inventory.get(i)!=null){
+				inventoryPane.add(PlayerDataManager.inventory.get(i), i%3, (int) Math.floor(i/3));
+				
+			}
+		}
 	}
 
 	public void draw() {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void update(){
+		
+	}
 
 	public void show() {
+		init();
 		Platform.runLater(new Runnable(){
 			public void run(){
-				gamethread.getRootNode().getChildren().add(holderPane);
+				gamethread.getBasePane().getChildren().add(holderPane);
 			}
 		});
-		
-		
 	}
 	
 	public void hide() {
+		inventoryPane.getChildren().clear();
+		for(int i = 0; i < PlayerDataManager.inventory.size(); i++){
+			if(PlayerDataManager.inventory.get(i)!= null){
+				if(PlayerDataManager.inventory.get(i).getCount() == 0){
+					System.out.println("Run out of "+PlayerDataManager.inventory.get(i).getName()+". Removing it");
+					PlayerDataManager.inventory.remove(i);
+				}
+			}
+		}
+		
 		Platform.runLater(new Runnable(){
 			public void run(){
-				gamethread.getRootNode().getChildren().remove(holderPane);
+				gamethread.getBasePane().getChildren().remove(holderPane);
 			}
 		});
-		
 	}
 	
 	public void handleMouseClick(MouseEvent e) {// could just do buttons

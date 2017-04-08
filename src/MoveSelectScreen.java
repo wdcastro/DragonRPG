@@ -221,7 +221,7 @@ public class MoveSelectScreen {
 			public void run() {
 				setButtons();
 				drawButtons();
-				gamethread.getRootNode().getChildren().add(holderPane);
+				gamethread.getBasePane().getChildren().add(holderPane);
 			}
 			
 		});
@@ -232,7 +232,7 @@ public class MoveSelectScreen {
 		Platform.runLater(new Runnable(){
 			@Override
 			public void run() {
-				gamethread.getRootNode().getChildren().remove(holderPane);
+				gamethread.getBasePane().getChildren().remove(holderPane);
 				removeButtons();
 			}
 		});

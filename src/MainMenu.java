@@ -1,11 +1,7 @@
 import java.io.File;
 
-import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.media.AudioClip;
 
 
 public class MainMenu {
@@ -17,6 +13,7 @@ public class MainMenu {
 
 
 		bgimage = new Image(new File("res/background/background.png").toURI().toString());
+		
 		
 	}
 	

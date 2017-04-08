@@ -189,6 +189,7 @@ public class TileManager{
 					System.out.print(map[i]);
 					System.out.print(", ");
 				}
+				System.out.println("");
 				break;
 			default:
 				System.err.println("Invalid Tile Layer int");

@@ -1,7 +1,9 @@
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -10,18 +12,22 @@ public class GameThread extends Thread{
 	GameState gameState;
 	SpellManager spellmanager;
 	BattleManager battlemanager;
+	DialogManager dialogmanager;
+	
+	CutsceneManager cutscenemanager;
 	
 	GraphicsContext context;
 	GameMenu gamemenu;
-	Group rootnode;
 	
 	MapManager mapmanager;
-	PartyManager partymanager;
+	PlayerDataManager playerdatamanager;
 	PlaylistManager playlistmanager;
-	DialogBox dialogbox;
+
 	HUD hud;
 	PartyMenu partymenu;
 	InventoryMenu inventorymenu;
+	Pane basePane;
+	MapAnimationController mapanimationcontroller;
 	
 	//private boolean isRunning = false;
 	private boolean isReady = false;
@@ -30,7 +36,9 @@ public class GameThread extends Thread{
 	public GameThread(GraphicsContext gc, Group root){
 		context = gc;
 		context.setFill(Color.WHITE);
-		rootnode = root;
+		basePane = new Pane();
+		basePane.setMinSize(Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
+		root.getChildren().add(basePane);
 	}
 	
 	public void run(){
@@ -40,20 +48,21 @@ public class GameThread extends Thread{
 		
 		playlistmanager = new PlaylistManager();
 		spellmanager = new SpellManager();
-		partymanager = new PartyManager(this);
-		battlemanager = new BattleManager(partymanager, this);
+		playerdatamanager = new PlayerDataManager();
+		battlemanager = new BattleManager(playerdatamanager, this);
 		playlistmanager = new PlaylistManager();
 		mapmanager = new MapManager(this);
 		gamemenu = new GameMenu(this);
-		dialogbox = new DialogBox(this);
+		dialogmanager = new DialogManager(this);
+		mapanimationcontroller = new MapAnimationController(this);
+		cutscenemanager = new CutsceneManager(this);
 
-		setGameState(GameState.IN_CITY);
 		
 		playlistmanager.start();
 		mapmanager.start();
-		dialogbox.start();
+		dialogmanager.start();
 		
-		while(!playlistmanager.isReady() || !mapmanager.isReady() || !dialogbox.isReady()){ //check for game modes
+		while(!playlistmanager.isReady() || !mapmanager.isReady() || !dialogmanager.isReady()){ //check for game modes
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -63,6 +72,7 @@ public class GameThread extends Thread{
 		}
 		isReady = true;
 
+		setGameState(GameState.IN_CITY);
 	}
 	
 	synchronized public boolean isReady(){
@@ -71,8 +81,8 @@ public class GameThread extends Thread{
 	
 	public void update(){
 		//System.out.println(gamemenu.isDone());
-		if(dialogbox.isShowing()){
-			dialogbox.update();
+		if(dialogmanager.isShowing()){
+			dialogmanager.update();
 		}
 		playlistmanager.update();
 		switch (gameState){
@@ -83,6 +93,7 @@ public class GameThread extends Thread{
 			break;
 		case IN_CITY:
 			mapmanager.update();
+			mapanimationcontroller.update();
 			break;
 		case IN_MENU:
 			break;
@@ -148,6 +159,7 @@ public class GameThread extends Thread{
 				gamemenu.handleKeyRelease(e);
 				break;
 			case PARTY_SCREEN:
+				partymenu.handleKeyRelease(e);
 				break;
 			default:
 				break;
@@ -156,11 +168,11 @@ public class GameThread extends Thread{
 	}
 	
 	public void handleMouseClick(MouseEvent e){
-		if(dialogbox.isShowing()){
-			if(dialogbox.isTyping){
-				dialogbox.skip();
+		if(dialogmanager.isShowing()){
+			if(e.getButton() == MouseButton.PRIMARY){
+
+				dialogmanager.forward();
 			} else {
-				dialogbox.hide();
 			}
 		} else {
 			switch(gameState){
@@ -182,15 +194,7 @@ public class GameThread extends Thread{
 			}
 		}
 	}
-	
-	public void showDialogBox(String text){
-		if(gameState == GameState.IN_CITY){
-			dialogbox.setText(text);
-			dialogbox.show();
-		}
-		
-	}
-	
+
 	
 	public void doMouse(MouseEvent e){
 		
@@ -234,7 +238,24 @@ public class GameThread extends Thread{
 		return context;
 	}
 	
-	public Group getRootNode(){
-		return rootnode;
+	public Pane getBasePane(){
+		return basePane;
+	}
+
+	public void handleKeyPressed(KeyEvent e) {
+		switch(gameState){
+		case IN_BATTLE:
+			break;
+		case IN_CITY:
+			mapmanager.handleKeyPressed(e);
+			break;
+		case IN_MENU:
+			break;
+		case PARTY_SCREEN:
+			break;
+		default:
+			break;
+		}
+		
 	}
 }

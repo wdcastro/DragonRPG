@@ -29,3 +29,13 @@
 -fx-border-radius: 5;
 -fx-border-color: red;
 }
+
+.playerdetails{
+-fx-font-size: 20px;
+-fx-text-fill: #ffffff;
+}
+
+.emptyplayerdetails{
+-fx-font-size: 20px;
+-fx-text-fill: #555555;
+}

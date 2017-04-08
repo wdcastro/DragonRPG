@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -29,7 +30,7 @@ public class InBattleGraphics {
 	double player2Scale = 1;
 	double player3Scale = 1;
 	double enemyScale;
-	Group root;
+	Pane base;
 	Label attacktext;
 	double attacktextTimer;
 	final double attacktextTimerDelay = 1500;
@@ -44,7 +45,7 @@ public class InBattleGraphics {
 	public InBattleGraphics(GameThread gamethread, BattleManager bm){
 		
 		context = gamethread.getContext();
-		root = gamethread.getRootNode();
+		base = gamethread.getBasePane();
 		battlemanager = bm;
 		
 		
@@ -194,9 +195,9 @@ public class InBattleGraphics {
 		}.start();
 		Platform.runLater(new Runnable(){
 			public void run(){
-				if(!root.getChildren().contains(attacktext))
+				if(!base.getChildren().contains(attacktext))
 				{
-					root.getChildren().add(attacktext);
+					base.getChildren().add(attacktext);
 				}
 			}
 		});
@@ -206,7 +207,7 @@ public class InBattleGraphics {
 		attacktextShowing = false;
 		Platform.runLater(new Runnable(){
 			public void run(){
-				root.getChildren().remove(attacktext);
+				base.getChildren().remove(attacktext);
 			}
 		});
 	}

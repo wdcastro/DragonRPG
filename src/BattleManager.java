@@ -10,7 +10,7 @@ public class BattleManager{
 	EnemyAI enemyai;
 	String[] spellqueue;
 	MoveSelectScreen moveselect;
-	PartyManager partymanager;
+	PlayerDataManager playerdatamanager;
 	InBattleGraphics inbattlegraphics;
 	
 	int currentChar;
@@ -34,10 +34,10 @@ public class BattleManager{
 	
 	BattleState currentState = BattleState.BATTLE_READY;
 	
-	public BattleManager(PartyManager pm, GameThread gamethread){
-		partymanager = pm;
-		enemyai = new EnemyAI(partymanager.getParty(), new Slime());
-		moveselect = new MoveSelectScreen(partymanager.getParty(), gamethread);
+	public BattleManager(PlayerDataManager pm, GameThread gamethread){
+		playerdatamanager = pm;
+		enemyai = new EnemyAI(playerdatamanager.getParty(), new Slime());
+		moveselect = new MoveSelectScreen(playerdatamanager.getParty(), gamethread);
 		inbattlegraphics = new InBattleGraphics(gamethread, this);
 	}
 	
@@ -72,31 +72,27 @@ public class BattleManager{
 				}
 				break;
 			case Q:
-				if(partymanager.getParty()[0] != null){
-
+				if(playerdatamanager.getParty()[0] != null){
 					System.out.println("Switching char 0");
 					currentChar = 0;
 				}
 				break;
 			case W:
-
-				if(partymanager.getParty()[1] != null){
+				if(playerdatamanager.getParty()[1] != null){
 
 					System.out.println("Switching char 1");
 					currentChar = 1;
 				}
 				break;
 			case E:
-
-				if(partymanager.getParty()[2] != null){
+				if(playerdatamanager.getParty()[2] != null){
 
 					System.out.println("Switching char 2");
 						currentChar = 2;
 				}
 				break;
 			case R:
-
-				if(partymanager.getParty()[3] != null){
+				if(playerdatamanager.getParty()[3] != null){
 
 					System.out.println("Switching char 3");
 					currentChar = 3;
@@ -131,7 +127,7 @@ public class BattleManager{
 				if(currentShieldCooldown >= finalShieldCooldown){
 					System.out.println("Activating shield");
 					shieldedChar = currentChar;
-					partymanager.getParty()[currentChar].setShield(true);
+					playerdatamanager.getParty()[currentChar].setShield(true);
 					currentShieldCooldown = 0;
 					currentShieldDuration = 0;
 				} else {
@@ -146,14 +142,14 @@ public class BattleManager{
 		// TODO: checks for who fights first
 		System.out.println("Battle Starting");
 		System.out.println("Move Select screen displays");
-		for(int i = 0; i<partymanager.getParty().length; i++){
-			if(partymanager.getParty()[i] != null){
+		for(int i = 0; i<playerdatamanager.getParty().length; i++){
+			if(playerdatamanager.getParty()[i] != null){
 				currentChar = i;
 				System.out.println("Character found, currentChar is "+i);
 				break;
 			}
 		}
-		partysize = partymanager.getParty().length;
+		partysize = playerdatamanager.getParty().length;
 		currentState = BattleState.MOVE_SELECT;
 		moveselect.startPick();
 		enemyai.start();
@@ -170,7 +166,7 @@ public class BattleManager{
 	}
 	
 	synchronized public Character[] getParty(){
-		return partymanager.getParty();
+		return playerdatamanager.getParty();
 	}
 	
 	synchronized public void update(){
@@ -184,12 +180,12 @@ public class BattleManager{
 		if(currentShieldCooldown < finalShieldCooldown){
 			currentShieldCooldown += Game.delta_time;
 			
-			if(partymanager.getParty()[shieldedChar].isShielded){
+			if(playerdatamanager.getParty()[shieldedChar].isShielded){
 				if(currentShieldDuration < finalShieldDuration){
 					currentShieldDuration += Game.delta_time;
 				} else {
 					System.out.println("Shield turned off.");
-					partymanager.getParty()[shieldedChar].setShield(false);
+					playerdatamanager.getParty()[shieldedChar].setShield(false);
 				}
 			}
 			
