@@ -1,28 +1,46 @@
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 
-public class MapAnimationController {
+public class MapAnimationController{
 	boolean isAnimating = false;
-	ArrayList<String> animations = new ArrayList<String>();
-	private float animationTimer = 180;
-	private float animationCooldown = 180;
-	
+	ArrayDeque<String> animations = new ArrayDeque<String>();
+	GameThread gamethread;
+
+	float animationCooldown = 1800;
+	float animationTimer = 0;
 	
 	public MapAnimationController(GameThread gt){
-		animations.add("right");
-		animations.add("right");
+
+		gamethread = gt;
 	}
+	
 	
 	public void update(){
-		if(isAnimating){
-			if(animationTimer >= animationCooldown){
-				isAnimating = false;
-			}
-			animationTimer+=Game.delta_time/Game.MILLIS_TO_NANOS;
-		}
 	}
 	
-	public void animate(){
+	public void addAnimations(String[] animationsToAdd){
+		for(int i = 0; i<animationsToAdd.length;i++){
+			animations.addLast(animationsToAdd[i]);
+		}
+		
+	}
+	
+	public void startAnimation(){
 		isAnimating = true;
-		animationTimer = 0;
+		animationCallback();
+	}
+	
+	public void animationCallback(){
+		if(!animations.isEmpty()){
+			String[] animationInput = animations.removeLast().split(" ");
+			if(animationInput[2].equals("right")){
+				gamethread.mapmanager.moveRight();
+				
+			} else if(animationInput[2].equals("left")){
+				gamethread.mapmanager.moveLeft();
+			}
+		} else {
+			isAnimating = false;
+			gamethread.cutscenemanager.cutsceneCallback();
+		}
 	}
 }

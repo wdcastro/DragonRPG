@@ -147,13 +147,15 @@ public class GameThread extends Thread{
 				battlemanager.doKeyboardAction(e);
 				break;
 			case IN_CITY:
-				if(e.getCode().toString()=="ENTER"){
-					setGameState(GameState.IN_MENU);
-				}
-				if(e.getCode().toString()=="P"){
-					setGameState(GameState.IN_BATTLE);
-				}
-				mapmanager.handleKeyRelease(e);
+				if(!dialogmanager.dialogbox.isShowing){
+					if(e.getCode().toString()=="ENTER"){
+						setGameState(GameState.IN_MENU);
+					}
+					if(e.getCode().toString()=="P"){
+						setGameState(GameState.IN_BATTLE);
+					}
+					mapmanager.handleKeyRelease(e);
+				}				
 				break;
 			case IN_MENU:
 				gamemenu.handleKeyRelease(e);
@@ -247,7 +249,9 @@ public class GameThread extends Thread{
 		case IN_BATTLE:
 			break;
 		case IN_CITY:
-			mapmanager.handleKeyPressed(e);
+			if(!dialogmanager.dialogbox.isShowing && !cutscenemanager.isCutsceneActive()){
+				mapmanager.handleKeyPressed(e);
+			}
 			break;
 		case IN_MENU:
 			break;

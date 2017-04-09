@@ -44,9 +44,8 @@ public class CutsceneManager {
 					}
 					animations.addLast(cutsceneItems.removeFirst());
 				}
-				System.out.print("Animations: ");
-				System.out.println(animations);
-				cutsceneCallback();
+				gamethread.mapanimationcontroller.addAnimations(animations.toArray(new String[animations.size()]));
+				gamethread.mapanimationcontroller.startAnimation();
 				if(cutsceneItems.isEmpty()){
 					cutsceneOver = true;
 				}
@@ -65,6 +64,9 @@ public class CutsceneManager {
 		cutsceneItems.addLast("d asuna yume de taaaakaku");
 		cutsceneItems.addLast("d asuna TOOONNNdaaaaa");
 		cutsceneItems.addLast("d asuna HIROGARI ATTEEE");
+		cutsceneItems.addLast("a iltas left");
+		cutsceneItems.addLast("a iltas left");
+		cutsceneItems.addLast("a iltas left");
 		
 	}
 	

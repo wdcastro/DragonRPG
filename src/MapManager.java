@@ -17,6 +17,9 @@ public class MapManager extends Thread{
 	private boolean isReady = false;
 	private boolean[] isDown = {false,false,false,false};
 	
+	public float movementTimer = 180;
+	public final float movementCooldown = 180;
+	
 
 
 	MapLocation currentLocation = MapLocation.TEST_CITY;
@@ -80,7 +83,7 @@ public class MapManager extends Thread{
 	public void update(){
 		tilemanager.update();
 		
-		if(!gt.mapanimationcontroller.isAnimating){
+		if(movementTimer >= movementCooldown && !gt.mapanimationcontroller.isAnimating && !gt.cutscenemanager.isCutsceneActive() && !gt.dialogmanager.dialogbox.isShowing){
 			if(isDown[0] == true){
 				moveUp();
 			}
@@ -94,7 +97,9 @@ public class MapManager extends Thread{
 				moveRight();
 				
 			}
-			gt.mapanimationcontroller.animate();
+			movementTimer = 0;
+		} else {
+			movementTimer += Game.delta_time/Game.MILLIS_TO_NANOS;
 		}
 	}
 	
@@ -113,6 +118,19 @@ public class MapManager extends Thread{
 					playery++;
 				}
 			}
+			if(gt.mapanimationcontroller.isAnimating){
+				new Thread(){
+					public void run(){
+						try {
+							this.sleep((long) movementCooldown);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						gt.mapanimationcontroller.animationCallback();
+					}
+				}.start();
+			}
 	}
 	
 	public void moveUp(){
@@ -125,7 +143,19 @@ public class MapManager extends Thread{
 					playery--;
 				}
 			}
-		
+			if(gt.mapanimationcontroller.isAnimating){
+				new Thread(){
+					public void run(){
+						try {
+							this.sleep((long) movementCooldown);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						gt.mapanimationcontroller.animationCallback();
+					}
+				}.start();
+			}
 	}
 	
 	public void moveLeft(){
@@ -138,6 +168,19 @@ public class MapManager extends Thread{
 					playerx--;
 				}
 			}
+			if(gt.mapanimationcontroller.isAnimating){
+				new Thread(){
+				public void run(){
+					try {
+						this.sleep((long) movementCooldown);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					gt.mapanimationcontroller.animationCallback();
+				}
+			}.start();
+			}
 	}
 	
 	public void moveRight(){
@@ -149,6 +192,19 @@ public class MapManager extends Thread{
 				if(playerx<camR-1){
 					playerx++;
 				}
+			}
+			if(gt.mapanimationcontroller.isAnimating){
+				new Thread(){
+					public void run(){
+						try {
+							this.sleep((long) movementCooldown);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						gt.mapanimationcontroller.animationCallback();
+					}
+				}.start();
 			}
 	}
 	
